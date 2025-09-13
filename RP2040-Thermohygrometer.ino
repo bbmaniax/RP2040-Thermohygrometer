@@ -6,8 +6,6 @@
 */
 
 #include <Arduino.h>
-#include <Wire.h>
-
 #include <Adafruit_AHTX0.h>
 #include <Adafruit_BMP280.h>
 #include <Adafruit_GFX.h>

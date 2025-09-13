@@ -1,0 +1,19 @@
+board_manager:
+  additional_urls:
+    - https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+
+library:
+  enable_unsafe_install: false
+
+sketch:
+  always_export_binaries: false
+
+build_cache:
+  compilations_before_purge: 10
+  ttl: 30m
+
+logging:
+  level: info
+  format: text
+
+default_fqbn: rp2040:rp2040:rpipico
