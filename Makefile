@@ -10,6 +10,7 @@ TEMP_DIR ?= ./tmp
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR) $(TEMP_DIR)
+	find . -type f -exec chmod -x {} +
 
 .PHONY: build
 build:
