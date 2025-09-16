@@ -1,24 +1,23 @@
 /*
-  View Display Library
+  AppView Display Library
 
   A library for rendering sensor data and charts
   on OLED displays.
 */
 
-#ifndef VIEW_H
-#define VIEW_H
+#ifndef APPVIEW_H
+#define APPVIEW_H
 
 #include <Arduino.h>
 #include <Adafruit_SSD1306.h>
 
 class History;
 
-class View {
+class AppView {
 public:
-  View(Adafruit_SSD1306& display, size_t width, size_t height);
+  AppView(Adafruit_SSD1306& display, size_t width, size_t height);
 
 public:
-  void begin();
   void render(int patternIndex, History& temperatureHistory, History& humidityHistory, History& pressureHistory);
   size_t getWidth() const;
   size_t getHeight() const;

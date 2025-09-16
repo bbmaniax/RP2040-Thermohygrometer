@@ -1,11 +1,11 @@
 /*
-  View Display Library
+  AppView Display Library
 
   A library for rendering sensor data and charts
   on OLED displays.
 */
 
-#include "View.h"
+#include "AppView.h"
 
 #include <Arduino.h>
 #include <Adafruit_GFX.h>
@@ -13,15 +13,9 @@
 #include "DebugSerial.h"
 #include "History.h"
 
-View::View(Adafruit_SSD1306& display, size_t width, size_t height) : display(display), width(width), height(height) {}
+AppView::AppView(Adafruit_SSD1306& display, size_t width, size_t height) : display(display), width(width), height(height) {}
 
-void View::begin() {
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-  display.clearDisplay();
-  display.display();
-}
-
-void View::render(int patternIndex, History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
+void AppView::render(int patternIndex, History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
   switch (patternIndex) {
     case 0:
       renderCurrentSensorData(temperatureHistory, humidityHistory, pressureHistory);
@@ -41,15 +35,15 @@ void View::render(int patternIndex, History& temperatureHistory, History& humidi
   }
 }
 
-size_t View::getWidth() const {
+size_t AppView::getWidth() const {
   return width;
 }
 
-size_t View::getHeight() const {
+size_t AppView::getHeight() const {
   return height;
 }
 
-void View::renderCurrentSensorData(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
+void AppView::renderCurrentSensorData(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
   display.clearDisplay();
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
@@ -60,7 +54,7 @@ void View::renderCurrentSensorData(History& temperatureHistory, History& humidit
   display.display();
 }
 
-void View::renderTemperatureChart(History& temperatureHistory) {
+void AppView::renderTemperatureChart(History& temperatureHistory) {
   display.clearDisplay();
   drawChart(temperatureHistory);
   display.setTextSize(2);
@@ -70,7 +64,7 @@ void View::renderTemperatureChart(History& temperatureHistory) {
   display.display();
 }
 
-void View::renderHumidityChart(History& humidityHistory) {
+void AppView::renderHumidityChart(History& humidityHistory) {
   display.clearDisplay();
   drawChart(humidityHistory);
   display.setTextSize(2);
@@ -80,7 +74,7 @@ void View::renderHumidityChart(History& humidityHistory) {
   display.display();
 }
 
-void View::renderPressureChart(History& pressureHistory) {
+void AppView::renderPressureChart(History& pressureHistory) {
   display.clearDisplay();
   drawChart(pressureHistory);
   display.setTextSize(2);
@@ -90,7 +84,7 @@ void View::renderPressureChart(History& pressureHistory) {
   display.display();
 }
 
-void View::drawChart(History& history) {
+void AppView::drawChart(History& history) {
   float minValue = history.getMinValue();
   float maxValue = history.getMaxValue();
 

@@ -1,7 +1,7 @@
 /*
   Button Input Library
 
-  Implementation for handling button inputs with debouncing
+  A library for handling button inputs with debouncing
   and click detection.
 */
 

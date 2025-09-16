@@ -1,5 +1,5 @@
 /*
-  Sensor Manager Library
+  SensorManager Library
 
   A library for managing sensor hardware communication
   and data acquisition.

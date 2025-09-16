@@ -12,13 +12,13 @@
 #include <Adafruit_SSD1306.h>
 
 #include "AppState.h"
+#include "AppView.h"
+#include "AppViewState.h"
 #include "Button.h"
 #include "DebugSerial.h"
 #include "GND.h"
 #include "History.h"
 #include "SensorManager.h"
-#include "View.h"
-#include "ViewState.h"
 
 #define BUTTON1_GND_PIN 28
 #define BUTTON1_INPUT_PIN 26
@@ -45,8 +45,8 @@ History humidityHistory(DISPLAY_WIDTH + 1);
 History pressureHistory(DISPLAY_WIDTH + 1);
 
 AppState appState(DISPLAY_UPDATE_INTERVAL_MS);
-ViewState viewState;
-View view(display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+AppViewState appViewState;
+AppView appView(display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
 void setup() {
   SERIAL_BEGIN(115200);
@@ -70,7 +70,7 @@ void setup() {
   }
 
   appState.begin();
-  viewState.begin();
+  appViewState.begin();
 
   float temperature, humidity, pressure;
   if (sensorManager.readSensorData(&temperature, &humidity, &pressure)) {
@@ -92,13 +92,13 @@ void loop() {
   button2.update();
 
   if (button1.isClicked()) {
-    viewState.switchToNextPattern();
+    appViewState.switchToNextPattern();
     needUpdate = true;
   }
 
   if (button2.isClicked()) {
-    viewState.flipDisplay();
-    display.setRotation(viewState.isDisplayFlipped() ? 2 : 0);
+    appViewState.flipDisplay();
+    display.setRotation(appViewState.isDisplayFlipped() ? 2 : 0);
     needUpdate = true;
   }
 
@@ -117,7 +117,7 @@ void loop() {
     needUpdate = true;
   }
 
-  if (needUpdate) view.render(viewState.getPatternIndex(), temperatureHistory, humidityHistory, pressureHistory);
+  if (needUpdate) appView.render(appViewState.getPatternIndex(), temperatureHistory, humidityHistory, pressureHistory);
 
 EOL:
   delay(10);

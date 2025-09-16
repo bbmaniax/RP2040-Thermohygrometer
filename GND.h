@@ -14,7 +14,6 @@ class GND {
 public:
   GND(uint8_t pin);
   void begin();
-  uint8_t getPin() const;
 
 private:
   uint8_t pin;

@@ -1,18 +1,18 @@
 /*
- ViewState Management Library
+ AppViewState Management Library
 
  A library for managing the view state, including
  display patterns and orientation.
 */
 
-#ifndef VIEWSTATE_H
-#define VIEWSTATE_H
+#ifndef APPVIEWSTATE_H
+#define APPVIEWSTATE_H
 
 #include <Arduino.h>
 
-class ViewState {
+class AppViewState {
 public:
-  ViewState();
+  AppViewState();
 
   void begin();
   uint8_t getPatternIndex() const;

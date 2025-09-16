@@ -1,7 +1,7 @@
 /*
   GND Pin Controller Library
 
-  Implementation for managing GPIO pins used as GND
+  A library for managing GPIO pins used as GND
   for external components.
 */
 
@@ -17,8 +17,4 @@ GND::GND(uint8_t pin) : pin(pin) {
 void GND::begin() {
   pinMode(pin, OUTPUT);
   digitalWrite(pin, LOW);
-}
-
-uint8_t GND::getPin() const {
-  return pin;
 }
