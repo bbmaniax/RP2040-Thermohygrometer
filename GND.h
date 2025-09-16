@@ -13,6 +13,8 @@
 class GND {
 public:
   GND(uint8_t pin);
+
+public:
   void begin();
 
 private:

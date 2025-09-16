@@ -5,8 +5,8 @@
   on OLED displays.
 */
 
-#ifndef APPVIEW_H
-#define APPVIEW_H
+#ifndef __APP_VIEW_H__
+#define __APP_VIEW_H__
 
 #include <Arduino.h>
 #include <Adafruit_SSD1306.h>
@@ -37,4 +37,4 @@ private:
   size_t height;
 };
 
-#endif
+#endif // __APP_VIEW_H__

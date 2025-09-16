@@ -5,8 +5,8 @@
  display patterns and orientation.
 */
 
-#ifndef APPVIEWSTATE_H
-#define APPVIEWSTATE_H
+#ifndef __APP_VIEW_STATE_H__
+#define __APP_VIEW_STATE_H__
 
 #include <Arduino.h>
 
@@ -14,6 +14,7 @@ class AppViewState {
 public:
   AppViewState();
 
+public:
   void begin();
   uint8_t getPatternIndex() const;
   void switchToNextPattern();
@@ -25,4 +26,4 @@ private:
   bool displayFlipped;
 };
 
-#endif
+#endif // __APP_VIEW_STATE_H__

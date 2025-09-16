@@ -5,8 +5,8 @@
   display settings and sensor data.
 */
 
-#ifndef APPSTATE_H
-#define APPSTATE_H
+#ifndef __APP_STATE_H__
+#define __APP_STATE_H__
 
 #include <Arduino.h>
 
@@ -24,4 +24,4 @@ private:
   unsigned long sensorReadIntervalMs;
 };
 
-#endif
+#endif // __APP_STATE_H__

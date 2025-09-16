@@ -5,8 +5,8 @@
   and data acquisition.
 */
 
-#ifndef SENSORMANAGER_H
-#define SENSORMANAGER_H
+#ifndef __SENSOR_MANAGER_H__
+#define __SENSOR_MANAGER_H__
 
 #include <Arduino.h>
 
@@ -26,4 +26,4 @@ private:
   Adafruit_BMP280& barometer;
 };
 
-#endif
+#endif // __SENSOR_MANAGER_H__
