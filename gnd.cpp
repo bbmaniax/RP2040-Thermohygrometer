@@ -5,10 +5,11 @@
   for external components.
 */
 
+#include "GND.h"
+
 #include <Arduino.h>
 
-#include "gnd.h"
-#include "serial.h"
+#include "DebugSerial.h"
 
 GND::GND(uint8_t pin) : pin(pin) {
 }

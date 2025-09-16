@@ -12,17 +12,17 @@
 
 class History {
 public:
-  History(uint8_t size);
+  History(size_t size);
   ~History();
   void fill(float value);
   void prepend(float value);
-  float getValue(uint8_t index) const;
+  float getValue(size_t index) const;
   float getMaxValue() const;
   float getMinValue() const;
-  uint8_t getSize() const;
+  size_t getSize() const;
 
 private:
-  uint8_t size;
+  size_t size;
   float* values;
   float minValue;
   float maxValue;

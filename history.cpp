@@ -5,12 +5,13 @@
   and retrieving historical sensor data.
 */
 
+#include "History.h"
+
 #include <Arduino.h>
 
-#include "history.h"
-#include "serial.h"
+#include "DebugSerial.h"
 
-History::History(uint8_t size) : size(size), minValue(0), maxValue(0) {
+History::History(size_t size) : size(size), minValue(0), maxValue(0) {
   values = new float[size];
 }
 
@@ -19,9 +20,7 @@ History::~History() {
 }
 
 void History::fill(float value) {
-  for (uint8_t i = 0; i < size; i++) {
-    values[i] = value;
-  }
+  for (size_t i = 0; i < size; i++) { values[i] = value; }
   minValue = value;
   maxValue = value;
 }
@@ -29,9 +28,7 @@ void History::fill(float value) {
 void History::prepend(float value) {
   float removedValue = values[size - 1];
 
-  for (uint8_t i = size - 1; i > 0; i--) {
-    values[i] = values[i - 1];
-  }
+  memmove(&values[1], &values[0], (size - 1) * sizeof(float));
   values[0] = value;
 
   if (value > maxValue) {
@@ -44,14 +41,14 @@ void History::prepend(float value) {
   if (removedValue == minValue || removedValue == maxValue) {
     minValue = values[0];
     maxValue = values[0];
-    for (uint8_t i = 1; i < size; i++) {
+    for (size_t i = 1; i < size; i++) {
       if (values[i] < minValue) minValue = values[i];
       if (values[i] > maxValue) maxValue = values[i];
     }
   }
 }
 
-float History::getValue(uint8_t index) const {
+float History::getValue(size_t index) const {
   if (index < size) {
     return values[index];
   }
@@ -66,6 +63,6 @@ float History::getMinValue() const {
   return minValue;
 }
 
-uint8_t History::getSize() const {
+size_t History::getSize() const {
   return size;
 }

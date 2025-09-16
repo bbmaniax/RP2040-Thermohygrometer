@@ -5,10 +5,11 @@
   and click detection.
 */
 
+#include "Button.h"
+
 #include <Arduino.h>
 
-#include "button.h"
-#include "serial.h"
+#include "DebugSerial.h"
 
 Button::Button(uint8_t pin, unsigned long debounceDelay) : pin(pin), debounceDelay(debounceDelay), currentState(false), lastState(false), lastReading(false), lastDebounceTime(0) {}
 
