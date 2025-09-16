@@ -15,10 +15,13 @@ class History;
 
 class View {
 public:
-  View(Adafruit_SSD1306& display);
+  View(Adafruit_SSD1306& display, size_t width, size_t height);
 
 public:
+  void begin();
   void render(int patternIndex, History& temperatureHistory, History& humidityHistory, History& pressureHistory);
+  size_t getWidth() const;
+  size_t getHeight() const;
 
 private:
   void renderCurrentSensorData(History& temperatureHistory, History& humidityHistory, History& pressureHistory);
@@ -31,6 +34,8 @@ private:
 
 private:
   Adafruit_SSD1306& display;
+  size_t width;
+  size_t height;
 };
 
 #endif

@@ -13,11 +13,13 @@
 #include "DebugSerial.h"
 #include "History.h"
 
-#define DISPLAY_WIDTH 128
-#define DISPLAY_HEIGHT 64
-#define DISPLAY_COLOR_WHITE SSD1306_WHITE
+View::View(Adafruit_SSD1306& display, size_t width, size_t height) : display(display), width(width), height(height) {}
 
-View::View(Adafruit_SSD1306& display) : display(display) {}
+void View::begin() {
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  display.clearDisplay();
+  display.display();
+}
 
 void View::render(int patternIndex, History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
   switch (patternIndex) {
@@ -39,38 +41,52 @@ void View::render(int patternIndex, History& temperatureHistory, History& humidi
   }
 }
 
+size_t View::getWidth() const {
+  return width;
+}
+
+size_t View::getHeight() const {
+  return height;
+}
+
 void View::renderCurrentSensorData(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
   display.clearDisplay();
   display.setTextSize(2);
-  display.setTextColor(DISPLAY_COLOR_WHITE);
-  display.setCursor(0, 0);
-  display.print(temperatureHistory.getValue(0));
-  display.println("C");
-  display.print(humidityHistory.getValue(0));
-  display.println("%");
-  display.print(pressureHistory.getValue(0));
-  display.println("hPa");
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 8);
+  display.println(String(temperatureHistory.getValue(0)) + "C");
+  display.println(String(humidityHistory.getValue(0)) + "%");
+  display.println(String(pressureHistory.getValue(0)) + "hPa");
   display.display();
 }
 
 void View::renderTemperatureChart(History& temperatureHistory) {
   display.clearDisplay();
   drawChart(temperatureHistory);
-  drawSensorValue(temperatureHistory.getValue(0), "C");
+  display.setTextSize(2);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.println(String(temperatureHistory.getValue(0)) + "C");
   display.display();
 }
 
 void View::renderHumidityChart(History& humidityHistory) {
   display.clearDisplay();
   drawChart(humidityHistory);
-  drawSensorValue(humidityHistory.getValue(0), "%");
+  display.setTextSize(2);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.println(String(humidityHistory.getValue(0)) + "%");
   display.display();
 }
 
 void View::renderPressureChart(History& pressureHistory) {
   display.clearDisplay();
   drawChart(pressureHistory);
-  drawSensorValue(pressureHistory.getValue(0), "hPa");
+  display.setTextSize(2);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, 0);
+  display.println(String(pressureHistory.getValue(0)) + "hPa");
   display.display();
 }
 
@@ -81,24 +97,16 @@ void View::drawChart(History& history) {
   float tempRange = maxValue - minValue;
   if (tempRange < 0.1f) { tempRange = 0.1f; }
 
-  for (uint8_t x = 0; x < DISPLAY_WIDTH - 1; x++) {
-    float currentValue = history.getValue(DISPLAY_WIDTH - 1 - x);
-    float nextValue = history.getValue(DISPLAY_WIDTH - 2 - x);
+  for (uint8_t x = 0; x < getWidth() - 1; x++) {
+    float currentValue = history.getValue(getWidth() - 1 - x);
+    float nextValue = history.getValue(getWidth() - 2 - x);
 
-    uint8_t currentY = 17 + (uint8_t)((maxValue - currentValue) * (DISPLAY_HEIGHT - 1 - 17) / tempRange);
-    uint8_t nextY = 17 + (uint8_t)((maxValue - nextValue) * (DISPLAY_HEIGHT - 1 - 17) / tempRange);
+    uint8_t currentY = 17 + (uint8_t)((maxValue - currentValue) * (getHeight() - 1 - 17) / tempRange);
+    uint8_t nextY = 17 + (uint8_t)((maxValue - nextValue) * (getHeight() - 1 - 17) / tempRange);
 
-    if (currentY >= DISPLAY_HEIGHT) currentY = DISPLAY_HEIGHT - 1;
-    if (nextY >= DISPLAY_HEIGHT) nextY = DISPLAY_HEIGHT - 1;
+    if (currentY >= getHeight()) currentY = getHeight() - 1;
+    if (nextY >= getHeight()) nextY = getHeight() - 1;
 
-    display.drawLine(x, currentY, x + 1, nextY, DISPLAY_COLOR_WHITE);
+    display.drawLine(x, currentY, x + 1, nextY, SSD1306_WHITE);
   }
-}
-
-void View::drawSensorValue(float value, const char* unit) {
-  String text = String(value) + unit;
-  display.setTextColor(DISPLAY_COLOR_WHITE);
-  display.setCursor(0, 0);
-  display.print(value);
-  display.print(unit);
 }

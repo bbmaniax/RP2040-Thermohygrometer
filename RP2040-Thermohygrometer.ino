@@ -27,7 +27,6 @@
 #define DISPLAY_WIDTH 128
 #define DISPLAY_HEIGHT 64
 #define DISPLAY_I2C_ADDRESS 0x3C
-#define DISPLAY_COLOR_WHITE SSD1306_WHITE
 
 #define DISPLAY_UPDATE_INTERVAL_MS 3000
 
@@ -47,7 +46,7 @@ History pressureHistory(DISPLAY_WIDTH + 1);
 
 AppState appState(DISPLAY_UPDATE_INTERVAL_MS);
 ViewState viewState;
-View view(display);
+View view(display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
 void setup() {
   SERIAL_BEGIN(115200);
