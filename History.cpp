@@ -11,27 +11,29 @@
 
 #include "DebugSerial.h"
 
-History::History(float* buffer, size_t size) : size(size), buffer(buffer), minValue(0), maxValue(0) {}
+History::History(int16_t* buffer, size_t size) : size(size), buffer(buffer), minValue(0), maxValue(0) {}
 
 History::~History() {}
 
 void History::fill(float value) {
-  for (size_t i = 0; i < size; i++) { buffer[i] = value; }
-  minValue = value;
-  maxValue = value;
+  int16_t intValue = (int16_t)(value * 10);
+  for (size_t i = 0; i < size; i++) { buffer[i] = intValue; }
+  minValue = intValue;
+  maxValue = intValue;
 }
 
 void History::prepend(float value) {
-  float removedValue = buffer[size - 1];
+  int16_t intValue = (int16_t)(value * 10);
+  int16_t removedValue = buffer[size - 1];
 
-  memmove(&buffer[1], &buffer[0], (size - 1) * sizeof(float));
-  buffer[0] = value;
+  memmove(&buffer[1], &buffer[0], (size - 1) * sizeof(int16_t));
+  buffer[0] = intValue;
 
-  if (value > maxValue) {
-    maxValue = value;
+  if (intValue > maxValue) {
+    maxValue = intValue;
   }
-  if (value < minValue) {
-    minValue = value;
+  if (intValue < minValue) {
+    minValue = intValue;
   }
 
   if (removedValue == minValue || removedValue == maxValue) {
@@ -46,17 +48,17 @@ void History::prepend(float value) {
 
 float History::getValue(size_t index) const {
   if (index < size) {
-    return buffer[index];
+    return buffer[index] / 10.0f;
   }
   return 0;
 }
 
 float History::getMaxValue() const {
-  return maxValue;
+  return maxValue / 10.0f;
 }
 
 float History::getMinValue() const {
-  return minValue;
+  return minValue / 10.0f;
 }
 
 size_t History::getSize() const {

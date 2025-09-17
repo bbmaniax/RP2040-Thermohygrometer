@@ -12,7 +12,7 @@
 
 class History {
 public:
-  History(float* buffer, size_t size);
+  History(int16_t* buffer, size_t size);
   ~History();
   void fill(float value);
   void prepend(float value);
@@ -23,9 +23,9 @@ public:
 
 private:
   size_t size;
-  float* buffer;
-  float minValue;
-  float maxValue;
+  int16_t* buffer;
+  int16_t minValue;
+  int16_t maxValue;
 };
 
 #endif // __HISTORY_H__

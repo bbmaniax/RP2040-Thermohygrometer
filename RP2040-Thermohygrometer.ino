@@ -40,9 +40,9 @@ Adafruit_AHTX0 thermometer;
 Adafruit_BMP280 barometer;
 SensorManager sensorManager(thermometer, barometer);
 
-float temperatureHistoryBuffer[DISPLAY_WIDTH + 1];
-float humidityHistoryBuffer[DISPLAY_WIDTH + 1];
-float pressureHistoryBuffer[DISPLAY_WIDTH + 1];
+int16_t temperatureHistoryBuffer[DISPLAY_WIDTH + 1];
+int16_t humidityHistoryBuffer[DISPLAY_WIDTH + 1];
+int16_t pressureHistoryBuffer[DISPLAY_WIDTH + 1];
 History temperatureHistory(temperatureHistoryBuffer, sizeof(temperatureHistoryBuffer) / sizeof(temperatureHistoryBuffer[0]));
 History humidityHistory(humidityHistoryBuffer, sizeof(humidityHistoryBuffer) / sizeof(humidityHistoryBuffer[0]));
 History pressureHistory(pressureHistoryBuffer, sizeof(pressureHistoryBuffer) / sizeof(pressureHistoryBuffer[0]));
