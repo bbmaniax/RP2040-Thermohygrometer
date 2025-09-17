@@ -29,6 +29,7 @@
 #define DISPLAY_I2C_ADDRESS 0x3C
 
 #define SENSOR_READ_INTERVAL_MS 3000
+#define PLOT_HORIZONTAL_SPACING 1
 
 GND gnd1(BUTTON1_GND_PIN);
 Button button1(BUTTON1_INPUT_PIN);
@@ -40,16 +41,16 @@ Adafruit_BMP280 barometer;
 SensorValues sensorValues;
 SensorManager sensorManager(thermometer, barometer);
 
-int16_t temperatureHistoryBuffer[DISPLAY_WIDTH + 1];
-int16_t humidityHistoryBuffer[DISPLAY_WIDTH + 1];
-int16_t pressureHistoryBuffer[DISPLAY_WIDTH + 1];
-History temperatureHistory(temperatureHistoryBuffer, DISPLAY_WIDTH + 1);
-History humidityHistory(humidityHistoryBuffer, DISPLAY_WIDTH + 1);
-History pressureHistory(pressureHistoryBuffer, DISPLAY_WIDTH + 1);
+int16_t temperatureHistoryBuffer[DISPLAY_WIDTH / (PLOT_HORIZONTAL_SPACING + 1) + PLOT_HORIZONTAL_SPACING];
+int16_t humidityHistoryBuffer[DISPLAY_WIDTH / (PLOT_HORIZONTAL_SPACING + 1) + PLOT_HORIZONTAL_SPACING];
+int16_t pressureHistoryBuffer[DISPLAY_WIDTH / (PLOT_HORIZONTAL_SPACING + 1) + PLOT_HORIZONTAL_SPACING];
+History temperatureHistory(temperatureHistoryBuffer, sizeof(temperatureHistoryBuffer) / sizeof(temperatureHistoryBuffer[0]));
+History humidityHistory(humidityHistoryBuffer, sizeof(humidityHistoryBuffer) / sizeof(humidityHistoryBuffer[0]));
+History pressureHistory(pressureHistoryBuffer, sizeof(pressureHistoryBuffer) / sizeof(pressureHistoryBuffer[0]));
 
 AppState appState(SENSOR_READ_INTERVAL_MS);
 AppViewState appViewState;
-AppView appView(display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+AppView appView(display, DISPLAY_WIDTH, DISPLAY_HEIGHT, PLOT_HORIZONTAL_SPACING);
 
 void setup() {
   SERIAL_BEGIN(115200);
