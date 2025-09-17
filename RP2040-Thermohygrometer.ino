@@ -11,49 +11,118 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
+#include "AppState.h"
+#include "AppView.h"
+#include "AppViewState.h"
+#include "Button.h"
+#include "DebugSerial.h"
+#include "GND.h"
+#include "History.h"
+#include "SensorManager.h"
+
+#define BUTTON1_GND_PIN 28
+#define BUTTON1_INPUT_PIN 26
+#define BUTTON2_INPUT_PIN 29
+
 #define DISPLAY_WIDTH 128
 #define DISPLAY_HEIGHT 64
 #define DISPLAY_I2C_ADDRESS 0x3C
-#define DISPLAY_COLOR_WHITE SSD1306_WHITE
+
+#define DISPLAY_UPDATE_INTERVAL_MS 3000
+
+GND gnd1(BUTTON1_GND_PIN);
+Button button1(BUTTON1_INPUT_PIN);
+Button button2(BUTTON2_INPUT_PIN);
+
+Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
 Adafruit_AHTX0 thermometer;
 Adafruit_BMP280 barometer;
-Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+SensorManager sensorManager(thermometer, barometer);
+
+History temperatureHistory(DISPLAY_WIDTH + 1);
+History humidityHistory(DISPLAY_WIDTH + 1);
+History pressureHistory(DISPLAY_WIDTH + 1);
+
+AppState appState(DISPLAY_UPDATE_INTERVAL_MS);
+AppViewState appViewState;
+AppView appView(display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
 void setup() {
-  display.begin(SSD1306_SWITCHCAPVCC, DISPLAY_I2C_ADDRESS);
+  SERIAL_BEGIN(115200);
+  WAIT_FOR_SERIAL();
+  SERIAL_PRINTLN();
+  SERIAL_PRINTLN("--");
+
+  gnd1.begin();
+  button1.begin();
+  button2.begin();
+
+  if (!display.begin(SSD1306_SWITCHCAPVCC, DISPLAY_I2C_ADDRESS)) {
+    SERIAL_PRINTLN("Failed to initialize display!");
+    abend();
+  }
   display.display();
 
-  thermometer.begin();
-  barometer.begin();
+  if (!sensorManager.begin()) {
+    SERIAL_PRINTLN("Failed to initialize sensor manager!");
+    abend();
+  }
 
-  delay(3 * 1000);
+  appState.begin();
+  appViewState.begin();
+
+  float temperature, humidity, pressure;
+  if (sensorManager.readSensorData(&temperature, &humidity, &pressure)) {
+    temperatureHistory.fill(temperature);
+    humidityHistory.fill(humidity);
+    pressureHistory.fill(pressure);
+  } else {
+    SERIAL_PRINTLN("Failed to read sensors!");
+  }
+
+  SERIAL_PRINTLN("Thermohygrometer");
+  delay(3000);
 }
 
 void loop() {
-  sensors_event_t humidity, temperature;
-  thermometer.getEvent(&humidity, &temperature);
+  bool needUpdate = false;
 
-  float pressure = barometer.readPressure() / 100.0F;
+  button1.update();
+  button2.update();
 
-  display.clearDisplay();
-  display.setTextSize(2);
-  display.setTextColor(DISPLAY_COLOR_WHITE);
-  printCenter(8, "%.1fC", temperature.temperature);
-  printCenter(24, "%.1f%%", humidity.relative_humidity);
-  printCenter(40, "%.1fhPa", pressure);
-  display.display();
+  if (button1.isClicked()) {
+    appViewState.switchToNextPattern();
+    needUpdate = true;
+  }
 
-  delay(5 * 1000);
+  if (button2.isClicked()) {
+    appViewState.flipDisplay();
+    display.setRotation(appViewState.isDisplayFlipped() ? 2 : 0);
+    needUpdate = true;
+  }
+
+  if (appState.shouldReadSensorData()) {
+    float temperature, humidity, pressure;
+    if (!sensorManager.readSensorData(&temperature, &humidity, &pressure)) {
+      SERIAL_PRINTLN("Failed to read sensors!");
+      goto EOL;
+    }
+
+    temperatureHistory.prepend(temperature);
+    humidityHistory.prepend(humidity);
+    pressureHistory.prepend(pressure);
+
+    appState.markSensorDataAsRead();
+    needUpdate = true;
+  }
+
+  if (needUpdate) appView.render(appViewState.getPatternIndex(), temperatureHistory, humidityHistory, pressureHistory);
+
+EOL:
+  delay(10);
 }
 
-void printCenter(int y, const char* fmt, float value) {
-  char buf[16];
-  snprintf(buf, sizeof(buf), fmt, value);
-
-  int16_t x1, y1;
-  uint16_t w, h;
-  display.getTextBounds(buf, 0, 0, &x1, &y1, &w, &h);
-  display.setCursor((DISPLAY_WIDTH - w) / 2, y);
-  display.print(buf);
+void abend() {
+  while (true) { delay(100); }
 }
