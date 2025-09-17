@@ -58,7 +58,3 @@ int16_t History::getMaxValue() const {
 int16_t History::getMinValue() const {
   return minValue;
 }
-
-size_t History::getSize() const {
-  return size;
-}

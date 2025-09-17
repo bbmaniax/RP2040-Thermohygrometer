@@ -19,7 +19,6 @@ public:
   int16_t getValue(size_t index) const;
   int16_t getMaxValue() const;
   int16_t getMinValue() const;
-  size_t getSize() const;
 
 private:
   size_t size;
