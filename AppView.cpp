@@ -1,15 +1,7 @@
 /*
   AppView Display Library
 
-  A library for rendering sensor data avoid AppView::renderPressureChart(History& pressureHistory) {
-  display.clearDisplay();
-  drawChart(pressureHistory);
-  display.setTextSize(2);
-  display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0, 0);
-  display.println(String(pressureHistory.getValue(0) / 10.0f, 1) + "P");
-  display.display();
-}
+  A library for rendering sensor data and charts
   on OLED displays.
 */
 
