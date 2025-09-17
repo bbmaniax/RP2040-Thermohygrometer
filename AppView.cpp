@@ -40,10 +40,12 @@ void AppView::renderCurrentSensorData(History& temperatureHistory, History& humi
   display.clearDisplay();
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0, 8);
-  display.println(String(temperatureHistory.getValue(0) / 10.0f) + "C");
-  display.println(String(humidityHistory.getValue(0) / 10.0f) + "%");
-  display.println(String(pressureHistory.getValue(0) / 10.0f) + "hPa");
+  display.setCursor(10, 8);
+  display.printf("%7s", (String(temperatureHistory.getValue(0) / 10.0f, 1) + "C").c_str());
+  display.setCursor(10, 24);
+  display.printf("%7s", (String(humidityHistory.getValue(0) / 10.0f, 1) + "%").c_str());
+  display.setCursor(10, 40);
+  display.printf("%9s", (String(pressureHistory.getValue(0) / 10.0f, 1) + "hPa").c_str());
   display.display();
 }
 
@@ -53,7 +55,7 @@ void AppView::renderTemperatureChart(History& temperatureHistory) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(temperatureHistory.getValue(0) / 10.0f) + "C");
+  display.println(String(temperatureHistory.getValue(0) / 10.0f, 1) + "C");
   display.display();
 }
 
@@ -63,7 +65,7 @@ void AppView::renderHumidityChart(History& humidityHistory) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(humidityHistory.getValue(0) / 10.0f) + "%");
+  display.println(String(humidityHistory.getValue(0) / 10.0f, 1) + "%");
   display.display();
 }
 
