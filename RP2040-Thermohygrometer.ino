@@ -33,19 +33,19 @@
 GND gnd1(BUTTON1_GND_PIN);
 Button button1(BUTTON1_INPUT_PIN);
 Button button2(BUTTON2_INPUT_PIN);
-
 Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
-
 Adafruit_AHTX0 thermometer;
 Adafruit_BMP280 barometer;
+
+SensorValues sensorValues;
 SensorManager sensorManager(thermometer, barometer);
 
 int16_t temperatureHistoryBuffer[DISPLAY_WIDTH + 1];
 int16_t humidityHistoryBuffer[DISPLAY_WIDTH + 1];
 int16_t pressureHistoryBuffer[DISPLAY_WIDTH + 1];
-History temperatureHistory(temperatureHistoryBuffer, sizeof(temperatureHistoryBuffer) / sizeof(temperatureHistoryBuffer[0]));
-History humidityHistory(humidityHistoryBuffer, sizeof(humidityHistoryBuffer) / sizeof(humidityHistoryBuffer[0]));
-History pressureHistory(pressureHistoryBuffer, sizeof(pressureHistoryBuffer) / sizeof(pressureHistoryBuffer[0]));
+History temperatureHistory(temperatureHistoryBuffer, DISPLAY_WIDTH + 1);
+History humidityHistory(humidityHistoryBuffer, DISPLAY_WIDTH + 1);
+History pressureHistory(pressureHistoryBuffer, DISPLAY_WIDTH + 1);
 
 AppState appState(DISPLAY_UPDATE_INTERVAL_MS);
 AppViewState appViewState;
@@ -75,11 +75,10 @@ void setup() {
   appState.begin();
   appViewState.begin();
 
-  float temperature, humidity, pressure;
-  if (sensorManager.readSensorData(&temperature, &humidity, &pressure)) {
-    temperatureHistory.fill((int16_t)(temperature * 10));
-    humidityHistory.fill((int16_t)(humidity * 10));
-    pressureHistory.fill((int16_t)(pressure * 10));
+  if (sensorManager.readSensorData(&sensorValues)) {
+    temperatureHistory.fill(sensorValues.temperature);
+    humidityHistory.fill(sensorValues.humidity);
+    pressureHistory.fill(sensorValues.pressure);
   } else {
     SERIAL_PRINTLN("Failed to read sensors!");
   }
@@ -106,15 +105,14 @@ void loop() {
   }
 
   if (appState.shouldReadSensorData()) {
-    float temperature, humidity, pressure;
-    if (!sensorManager.readSensorData(&temperature, &humidity, &pressure)) {
+    if (!sensorManager.readSensorData(&sensorValues)) {
       SERIAL_PRINTLN("Failed to read sensors!");
       goto EOL;
     }
 
-    temperatureHistory.prepend((int16_t)(temperature * 10));
-    humidityHistory.prepend((int16_t)(humidity * 10));
-    pressureHistory.prepend((int16_t)(pressure * 10));
+    temperatureHistory.prepend(sensorValues.temperature);
+    humidityHistory.prepend(sensorValues.humidity);
+    pressureHistory.prepend(sensorValues.pressure);
 
     appState.markSensorDataAsRead();
     needUpdate = true;
