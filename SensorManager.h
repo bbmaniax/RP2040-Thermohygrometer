@@ -13,13 +13,19 @@
 class Adafruit_AHTX0;
 class Adafruit_BMP280;
 
+struct SensorValues {
+  int16_t temperature;
+  int16_t humidity;
+  int16_t pressure;
+};
+
 class SensorManager {
 public:
   SensorManager(Adafruit_AHTX0& thermometer, Adafruit_BMP280& barometer);
 
 public:
   bool begin();
-  bool readSensorData(float* temperature, float* humidity, float* pressure);
+  bool readSensorData(SensorValues* values);
 
 private:
   Adafruit_AHTX0& thermometer;

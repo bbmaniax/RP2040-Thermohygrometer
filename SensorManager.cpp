@@ -28,22 +28,22 @@ bool SensorManager::begin() {
   return true;
 }
 
-bool SensorManager::readSensorData(float* temperature, float* humidity, float* pressure) {
+bool SensorManager::readSensorData(SensorValues* values) {
   sensors_event_t temperatureEvent, humidityEvent;
   thermometer.getEvent(&humidityEvent, &temperatureEvent);
   if (isnan(temperatureEvent.temperature) || isnan(humidityEvent.relative_humidity)) {
     SERIAL_PRINTLN("Failed to read AHTX0!");
     return false;
   }
-  *temperature = temperatureEvent.temperature;
-  *humidity = humidityEvent.relative_humidity;
+  values->temperature = (int16_t)(temperatureEvent.temperature * 10);
+  values->humidity = (int16_t)(humidityEvent.relative_humidity * 10);
 
-  *pressure = barometer.readPressure();
-  if (isnan(*pressure)) {
+  float pressure = barometer.readPressure();
+  if (isnan(pressure)) {
     SERIAL_PRINTLN("Failed to read BMP280!");
     return false;
   }
-  *pressure = *pressure / 100.0f;
+  values->pressure = (int16_t)(pressure / 10.0f);
 
   return true;
 }

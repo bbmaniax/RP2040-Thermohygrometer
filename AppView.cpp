@@ -13,7 +13,8 @@
 #include "DebugSerial.h"
 #include "History.h"
 
-AppView::AppView(Adafruit_SSD1306& display, size_t width, size_t height) : display(display), width(width), height(height) {}
+AppView::AppView(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t plotHorizontalSpacing)
+  : display(display), width(width), height(height), plotHorizontalStep(plotHorizontalSpacing + 1) {}
 
 void AppView::render(int patternIndex, History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
   switch (patternIndex) {
@@ -35,22 +36,14 @@ void AppView::render(int patternIndex, History& temperatureHistory, History& hum
   }
 }
 
-size_t AppView::getWidth() const {
-  return width;
-}
-
-size_t AppView::getHeight() const {
-  return height;
-}
-
 void AppView::renderCurrentSensorData(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
   display.clearDisplay();
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 8);
-  display.println(String(temperatureHistory.getValue(0)) + "C");
-  display.println(String(humidityHistory.getValue(0)) + "%");
-  display.println(String(pressureHistory.getValue(0)) + "hPa");
+  display.println(String(temperatureHistory.getValue(0) / 10.0f) + "C");
+  display.println(String(humidityHistory.getValue(0) / 10.0f) + "%");
+  display.println(String(pressureHistory.getValue(0) / 10.0f) + "hPa");
   display.display();
 }
 
@@ -60,7 +53,7 @@ void AppView::renderTemperatureChart(History& temperatureHistory) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(temperatureHistory.getValue(0)) + "C");
+  display.println(String(temperatureHistory.getValue(0) / 10.0f) + "C");
   display.display();
 }
 
@@ -70,7 +63,7 @@ void AppView::renderHumidityChart(History& humidityHistory) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(humidityHistory.getValue(0)) + "%");
+  display.println(String(humidityHistory.getValue(0) / 10.0f) + "%");
   display.display();
 }
 
@@ -80,27 +73,28 @@ void AppView::renderPressureChart(History& pressureHistory) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(pressureHistory.getValue(0)) + "hPa");
+  display.println(String(pressureHistory.getValue(0) / 10.0f) + "hPa");
   display.display();
 }
 
 void AppView::drawChart(History& history) {
-  float minValue = history.getMinValue();
-  float maxValue = history.getMaxValue();
+  int16_t minValue = history.getMinValue();
+  int16_t maxValue = history.getMaxValue();
 
-  float tempRange = maxValue - minValue;
-  if (tempRange < 0.1f) { tempRange = 0.1f; }
+  int16_t tempRange = maxValue - minValue;
+  if (tempRange < 1) { tempRange = 1; }
 
-  for (uint8_t x = 0; x < getWidth() - 1; x++) {
-    float currentValue = history.getValue(getWidth() - 1 - x);
-    float nextValue = history.getValue(getWidth() - 2 - x);
+  uint8_t step = plotHorizontalStep;
+  for (uint8_t i = 0; i < width - 1; i++) {
+    int16_t currentValue = history.getValue(i);
+    int16_t nextValue = history.getValue(i + 1);
 
-    uint8_t currentY = 17 + (uint8_t)((maxValue - currentValue) * (getHeight() - 1 - 17) / tempRange);
-    uint8_t nextY = 17 + (uint8_t)((maxValue - nextValue) * (getHeight() - 1 - 17) / tempRange);
+    uint8_t currentY = 17 + (uint8_t)((maxValue - currentValue) * (height - 1 - 17) / tempRange);
+    uint8_t nextY = 17 + (uint8_t)((maxValue - nextValue) * (height - 1 - 17) / tempRange);
 
-    if (currentY >= getHeight()) currentY = getHeight() - 1;
-    if (nextY >= getHeight()) nextY = getHeight() - 1;
+    if (currentY >= height) currentY = height - 1;
+    if (nextY >= height) nextY = height - 1;
 
-    display.drawLine(x, currentY, x + 1, nextY, SSD1306_WHITE);
+    display.drawLine(width - (i * step) - 1, currentY, width - ((i + 1) * step) - 1, nextY, SSD1306_WHITE);
   }
 }
