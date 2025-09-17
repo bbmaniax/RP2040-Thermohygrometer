@@ -28,7 +28,7 @@
 #define DISPLAY_HEIGHT 64
 #define DISPLAY_I2C_ADDRESS 0x3C
 
-#define DISPLAY_UPDATE_INTERVAL_MS 3000
+#define SENSOR_READ_INTERVAL_MS 3000
 
 GND gnd1(BUTTON1_GND_PIN);
 Button button1(BUTTON1_INPUT_PIN);
@@ -47,7 +47,7 @@ History temperatureHistory(temperatureHistoryBuffer, DISPLAY_WIDTH + 1);
 History humidityHistory(humidityHistoryBuffer, DISPLAY_WIDTH + 1);
 History pressureHistory(pressureHistoryBuffer, DISPLAY_WIDTH + 1);
 
-AppState appState(DISPLAY_UPDATE_INTERVAL_MS);
+AppState appState(SENSOR_READ_INTERVAL_MS);
 AppViewState appViewState;
 AppView appView(display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
