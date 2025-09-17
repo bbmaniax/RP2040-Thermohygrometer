@@ -48,9 +48,9 @@ void AppView::renderCurrentSensorData(History& temperatureHistory, History& humi
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 8);
-  display.println(String(temperatureHistory.getValue(0)) + "C");
-  display.println(String(humidityHistory.getValue(0)) + "%");
-  display.println(String(pressureHistory.getValue(0)) + "hPa");
+  display.println(String(temperatureHistory.getValue(0) / 10.0f) + "C");
+  display.println(String(humidityHistory.getValue(0) / 10.0f) + "%");
+  display.println(String(pressureHistory.getValue(0) / 10.0f) + "hPa");
   display.display();
 }
 
@@ -60,7 +60,7 @@ void AppView::renderTemperatureChart(History& temperatureHistory) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(temperatureHistory.getValue(0)) + "C");
+  display.println(String(temperatureHistory.getValue(0) / 10.0f) + "C");
   display.display();
 }
 
@@ -70,7 +70,7 @@ void AppView::renderHumidityChart(History& humidityHistory) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(humidityHistory.getValue(0)) + "%");
+  display.println(String(humidityHistory.getValue(0) / 10.0f) + "%");
   display.display();
 }
 
@@ -80,20 +80,20 @@ void AppView::renderPressureChart(History& pressureHistory) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(pressureHistory.getValue(0)) + "hPa");
+  display.println(String(pressureHistory.getValue(0) / 10.0f) + "hPa");
   display.display();
 }
 
 void AppView::drawChart(History& history) {
-  float minValue = history.getMinValue();
-  float maxValue = history.getMaxValue();
+  int16_t minValue = history.getMinValue();
+  int16_t maxValue = history.getMaxValue();
 
-  float tempRange = maxValue - minValue;
-  if (tempRange < 0.1f) { tempRange = 0.1f; }
+  int16_t tempRange = maxValue - minValue;
+  if (tempRange < 1) { tempRange = 1; }
 
   for (uint8_t x = 0; x < getWidth() - 1; x++) {
-    float currentValue = history.getValue(getWidth() - 1 - x);
-    float nextValue = history.getValue(getWidth() - 2 - x);
+    int16_t currentValue = history.getValue(getWidth() - 1 - x);
+    int16_t nextValue = history.getValue(getWidth() - 2 - x);
 
     uint8_t currentY = 17 + (uint8_t)((maxValue - currentValue) * (getHeight() - 1 - 17) / tempRange);
     uint8_t nextY = 17 + (uint8_t)((maxValue - nextValue) * (getHeight() - 1 - 17) / tempRange);

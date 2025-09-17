@@ -14,11 +14,11 @@ class History {
 public:
   History(int16_t* buffer, size_t size);
   ~History();
-  void fill(float value);
-  void prepend(float value);
-  float getValue(size_t index) const;
-  float getMaxValue() const;
-  float getMinValue() const;
+  void fill(int16_t value);
+  void prepend(int16_t value);
+  int16_t getValue(size_t index) const;
+  int16_t getMaxValue() const;
+  int16_t getMinValue() const;
   size_t getSize() const;
 
 private:

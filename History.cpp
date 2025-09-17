@@ -15,25 +15,23 @@ History::History(int16_t* buffer, size_t size) : size(size), buffer(buffer), min
 
 History::~History() {}
 
-void History::fill(float value) {
-  int16_t intValue = (int16_t)(value * 10);
-  for (size_t i = 0; i < size; i++) { buffer[i] = intValue; }
-  minValue = intValue;
-  maxValue = intValue;
+void History::fill(int16_t value) {
+  for (size_t i = 0; i < size; i++) { buffer[i] = value; }
+  minValue = value;
+  maxValue = value;
 }
 
-void History::prepend(float value) {
-  int16_t intValue = (int16_t)(value * 10);
+void History::prepend(int16_t value) {
   int16_t removedValue = buffer[size - 1];
 
   memmove(&buffer[1], &buffer[0], (size - 1) * sizeof(int16_t));
-  buffer[0] = intValue;
+  buffer[0] = value;
 
-  if (intValue > maxValue) {
-    maxValue = intValue;
+  if (value > maxValue) {
+    maxValue = value;
   }
-  if (intValue < minValue) {
-    minValue = intValue;
+  if (value < minValue) {
+    minValue = value;
   }
 
   if (removedValue == minValue || removedValue == maxValue) {
@@ -46,19 +44,19 @@ void History::prepend(float value) {
   }
 }
 
-float History::getValue(size_t index) const {
+int16_t History::getValue(size_t index) const {
   if (index < size) {
-    return buffer[index] / 10.0f;
+    return buffer[index];
   }
   return 0;
 }
 
-float History::getMaxValue() const {
-  return maxValue / 10.0f;
+int16_t History::getMaxValue() const {
+  return maxValue;
 }
 
-float History::getMinValue() const {
-  return minValue / 10.0f;
+int16_t History::getMinValue() const {
+  return minValue;
 }
 
 size_t History::getSize() const {

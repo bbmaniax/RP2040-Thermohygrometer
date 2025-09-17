@@ -77,9 +77,9 @@ void setup() {
 
   float temperature, humidity, pressure;
   if (sensorManager.readSensorData(&temperature, &humidity, &pressure)) {
-    temperatureHistory.fill(temperature);
-    humidityHistory.fill(humidity);
-    pressureHistory.fill(pressure);
+    temperatureHistory.fill((int16_t)(temperature * 10));
+    humidityHistory.fill((int16_t)(humidity * 10));
+    pressureHistory.fill((int16_t)(pressure * 10));
   } else {
     SERIAL_PRINTLN("Failed to read sensors!");
   }
@@ -112,9 +112,9 @@ void loop() {
       goto EOL;
     }
 
-    temperatureHistory.prepend(temperature);
-    humidityHistory.prepend(humidity);
-    pressureHistory.prepend(pressure);
+    temperatureHistory.prepend((int16_t)(temperature * 10));
+    humidityHistory.prepend((int16_t)(humidity * 10));
+    pressureHistory.prepend((int16_t)(pressure * 10));
 
     appState.markSensorDataAsRead();
     needUpdate = true;
