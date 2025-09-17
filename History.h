@@ -12,7 +12,7 @@
 
 class History {
 public:
-  History(size_t size);
+  History(float* buffer, size_t size);
   ~History();
   void fill(float value);
   void prepend(float value);
@@ -23,7 +23,7 @@ public:
 
 private:
   size_t size;
-  float* values;
+  float* buffer;
   float minValue;
   float maxValue;
 };
