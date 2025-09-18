@@ -9,8 +9,6 @@
 
 #include <Arduino.h>
 
-#include "DebugSerial.h"
-
 History::History(int16_t* buffer, size_t size) : size(size), buffer(buffer), minValue(0), maxValue(0) {}
 
 History::~History() {}

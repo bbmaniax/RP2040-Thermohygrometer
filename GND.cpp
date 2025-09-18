@@ -9,8 +9,6 @@
 
 #include <Arduino.h>
 
-#include "DebugSerial.h"
-
 GND::GND(uint8_t pin) : pin(pin) {
 }
 

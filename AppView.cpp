@@ -10,7 +10,6 @@
 #include <Arduino.h>
 #include <Adafruit_GFX.h>
 
-#include "DebugSerial.h"
 #include "History.h"
 
 AppView::AppView(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t plotHorizontalSpacing)
