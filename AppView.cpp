@@ -74,7 +74,7 @@ void AppView::renderPressureChart(History& pressureHistory) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(pressureHistory.getValue(0) / 10.0f) + "hPa");
+  display.println(String(pressureHistory.getValue(0) / 10.0f, 1) + "hPa");
   display.display();
 }
 
