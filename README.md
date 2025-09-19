@@ -55,7 +55,7 @@ RP2040-Zero を使用したコンパクトな温湿度・気圧計です。
 
 ## 配線図
 
-<img src="./images/wiring.png" alt="配線図" />
+<img src="./images/wiring.png" alt="配線図" style="border: 1px solid #ccc;" />
 
 ## 開発環境
 
