@@ -10,7 +10,6 @@
 #include <Arduino.h>
 #include <Adafruit_GFX.h>
 
-#include "DebugSerial.h"
 #include "History.h"
 
 AppView::AppView(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t plotHorizontalSpacing)
@@ -75,7 +74,7 @@ void AppView::renderPressureChart(History& pressureHistory) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(pressureHistory.getValue(0) / 10.0f) + "hPa");
+  display.println(String(pressureHistory.getValue(0) / 10.0f, 1) + "hPa");
   display.display();
 }
 

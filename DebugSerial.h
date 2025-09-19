@@ -11,19 +11,18 @@
 
 #if defined(DEBUG)
 #define SERIAL_BEGIN(x) Serial.begin(x)
-#define WAIT_FOR_SERIAL() \
-  while (!Serial) { delay(100); }
+#define SERIAL_WAIT_FOR() delay(100)
 #define SERIAL_PRINT(x) Serial.print(x)
 #define SERIAL_PRINTLN(x) Serial.println(x)
 #define SERIAL_PRINTHEX(x) Serial.print(x, HEX)
 #define SERIAL_PRINTLNHEX(x) Serial.println(x, HEX)
 #else
 #define SERIAL_BEGIN(x)
-#define WAIT_FOR_SERIAL()
+#define SERIAL_WAIT_FOR()
 #define SERIAL_PRINT(x)
 #define SERIAL_PRINTLN(x)
 #define SERIAL_PRINTHEX(x)
 #define SERIAL_PRINTLNHEX(x)
 #endif
 
-#endif // __SERIAL_H__
+#endif  // __SERIAL_H__
