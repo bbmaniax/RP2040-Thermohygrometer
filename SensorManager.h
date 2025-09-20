@@ -12,14 +12,12 @@ class SensorManager {
 public:
   SensorManager(Adafruit_AHTX0& thermometer, Adafruit_BMP280& barometer);
 
-public:
   struct SensorValues {
     int16_t temperature;
     int16_t humidity;
     int16_t pressure;
   };
 
-public:
   bool begin();
   bool readSensorData(SensorValues* values);
 

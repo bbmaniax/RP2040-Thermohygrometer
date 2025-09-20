@@ -8,7 +8,7 @@
 class History {
 public:
   History(int16_t* buffer, size_t size);
-  ~History();
+
   void fill(int16_t value);
   void prepend(int16_t value);
   int16_t getValue(size_t index) const;
