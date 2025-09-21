@@ -17,6 +17,7 @@ public:
 
 private:
   unsigned long intervalMs;
+
   unsigned long lastMillis;
   bool timeUp;
 };
