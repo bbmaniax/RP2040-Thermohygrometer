@@ -11,14 +11,14 @@ public:
 
   void begin();
   void update();
+  void reset();
 
   bool isTimeUp() const;
-  void reset();
 
 private:
   unsigned long intervalMs;
-
   unsigned long lastMillis;
+
   bool timeUp;
 };
 
