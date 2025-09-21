@@ -7,8 +7,7 @@
 TimeKeeper::TimeKeeper(unsigned long intervalMs) : intervalMs(intervalMs), lastMillis(0), timeUp(false) {}
 
 void TimeKeeper::begin() {
-  lastMillis = 0;
-  timeUp = false;
+  reset();
 }
 
 void TimeKeeper::update() {
@@ -18,11 +17,11 @@ void TimeKeeper::update() {
   }
 }
 
-bool TimeKeeper::isTimeUp() const {
-  return timeUp;
-}
-
 void TimeKeeper::reset() {
   lastMillis = millis();
   timeUp = false;
+}
+
+bool TimeKeeper::isTimeUp() const {
+  return timeUp;
 }

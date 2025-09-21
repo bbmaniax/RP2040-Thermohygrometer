@@ -11,6 +11,7 @@ bool Button::begin() {
   currentState = false;
   lastState = currentState;
   lastReading = currentState;
+  lastDebounceTime = millis();
   return true;
 }
 

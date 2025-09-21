@@ -17,11 +17,12 @@ public:
 
 private:
   uint8_t pin;
+  unsigned long debounceDelay;
+
   bool currentState;
   bool lastState;
   bool lastReading;
   unsigned long lastDebounceTime;
-  unsigned long debounceDelay;
 };
 
 #endif  // __BUTTON_H__
