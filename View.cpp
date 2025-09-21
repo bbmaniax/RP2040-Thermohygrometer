@@ -10,6 +10,15 @@
 View::View(ViewState& viewState, Adafruit_SSD1306& display, size_t width, size_t height, uint8_t plotHorizontalSpacing)
     : viewState(viewState), display(display), width(width), height(height), plotHorizontalStep(plotHorizontalSpacing + 1) {}
 
+bool View::begin(bool displayOn) {
+  viewState.begin();
+  bool ok = display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  if (ok) {
+    display.display();
+  }
+  return ok;
+}
+
 void View::render(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
   switch (viewState.getViewMode()) {
     case 0: renderCurrentSensorData(temperatureHistory, humidityHistory, pressureHistory); break;

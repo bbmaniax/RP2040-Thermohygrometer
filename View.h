@@ -13,6 +13,8 @@ class View {
 public:
   View(ViewState& viewState, Adafruit_SSD1306& display, size_t width, size_t height, uint8_t plotHorizontalSpacing);
 
+  bool begin(bool displayOn = true);
+
   void render(History& temperatureHistory, History& humidityHistory, History& pressureHistory);
 
 private:

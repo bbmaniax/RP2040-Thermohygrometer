@@ -59,13 +59,9 @@ void setup() {
   DEBUG_SERIAL_PRINTLN("--");
   DEBUG_SERIAL_PRINTLN("Thermohygrometer");
 
-  viewState.begin();
-
   gnd1.begin();
 
-  if (!display.begin(SSD1306_SWITCHCAPVCC, DISPLAY_I2C_ADDRESS)) { DEBUG_SERIAL_PRINTLN("Failed to initialize display!"); }
-  display.display();
-
+  if (!view.begin()) { DEBUG_SERIAL_PRINTLN("Failed to initialize view!"); }
   if (!eventManager.begin()) { DEBUG_SERIAL_PRINTLN("Failed to initialize event manager!"); }
   if (!sensorManager.begin()) { DEBUG_SERIAL_PRINTLN("Failed to initialize sensor manager!"); }
 
