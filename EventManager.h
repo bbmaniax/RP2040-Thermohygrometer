@@ -7,16 +7,23 @@ class Button;
 
 class EventManager {
 public:
-  EventManager(Button& button1, Button& button2);
+  EventManager(unsigned long sensorReadIntervalMs, Button& button1, Button& button2);
 
   typedef void (*ButtonClickHandler)();
 
   bool begin();
   bool update();
 
+  bool shouldReadSensorData();
+  void markSensorDataAsRead();
+
   Button* getButton(int index);
 
 private:
+  unsigned long sensorReadIntervalMs;
+  unsigned long lastMillis;
+  bool needSensorDataRead;
+
   Button& button1;
   Button& button2;
 };

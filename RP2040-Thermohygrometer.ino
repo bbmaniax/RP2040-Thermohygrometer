@@ -5,7 +5,6 @@
 #include <Adafruit_SSD1306.h>
 #include <Arduino.h>
 
-#include "AppState.h"
 #include "Button.h"
 #include "DebugSerial.h"
 #include "EventManager.h"
@@ -29,25 +28,23 @@
 #define PLOT_HORIZONTAL_SPACING 1
 
 GND gnd1(BUTTON1_GND_PIN);
-
 Button button1(BUTTON1_INPUT_PIN);
 Button button2(BUTTON2_INPUT_PIN);
-EventManager eventManager(button1, button2);
-
 Adafruit_AHTX0 thermometer;
 Adafruit_BMP280 barometer;
-SensorManager::SensorValues sensorValues;
+Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+
+EventManager eventManager(SENSOR_READ_INTERVAL_MS, button1, button2);
 SensorManager sensorManager(thermometer, barometer);
 
+SensorManager::SensorValues sensorValues;
 int16_t temperatureHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t humidityHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t pressureHistoryBuffer[HISTORY_BUFFER_SIZE];
 History temperatureHistory(temperatureHistoryBuffer, HISTORY_BUFFER_SIZE);
 History humidityHistory(humidityHistoryBuffer, HISTORY_BUFFER_SIZE);
 History pressureHistory(pressureHistoryBuffer, HISTORY_BUFFER_SIZE);
-AppState appState(SENSOR_READ_INTERVAL_MS);
 
-Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 ViewState viewState;
 View view(viewState, display, DISPLAY_WIDTH, DISPLAY_HEIGHT, PLOT_HORIZONTAL_SPACING);
 
@@ -58,7 +55,6 @@ void setup() {
   DEBUG_SERIAL_PRINTLN("--");
   DEBUG_SERIAL_PRINTLN("Thermohygrometer");
 
-  appState.begin();
   viewState.begin();
 
   gnd1.begin();
@@ -92,14 +88,14 @@ void loop() {
     needUpdate = true;
   }
 
-  if (appState.shouldReadSensorData()) {
+  if (eventManager.shouldReadSensorData()) {
     if (!sensorManager.readSensorData(&sensorValues)) {
       DEBUG_SERIAL_PRINTLN("Failed to read sensors!");
     }
     temperatureHistory.prepend(sensorValues.temperature);
     humidityHistory.prepend(sensorValues.humidity);
     pressureHistory.prepend(sensorValues.pressure);
-    appState.markSensorDataAsRead();
+    eventManager.markSensorDataAsRead();
     needUpdate = true;
   }
 
