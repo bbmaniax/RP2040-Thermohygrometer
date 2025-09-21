@@ -5,27 +5,41 @@
 
 #include "History.h"
 #include "View.h"
-#include "ViewState.h"
 
-View::View(ViewState& viewState, Adafruit_SSD1306& display, size_t width, size_t height, uint8_t plotHorizontalSpacing)
-    : viewState(viewState), display(display), width(width), height(height), plotHorizontalStep(plotHorizontalSpacing + 1) {}
+View::View(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t plotHorizontalSpacing = 1)
+    : display(display), width(width), height(height), viewMode(VIEW_MODE_ALL), displayFlipped(false), plotHorizontalStep(plotHorizontalSpacing + 1) {}
+
+bool View::begin(bool displayOn) {
+  viewMode = VIEW_MODE_ALL;
+  displayFlipped = false;
+  bool ok = display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  if (ok) {
+    display.display();
+  }
+  return ok;
+}
+
+void View::switchToNextViewMode() {
+  viewMode = static_cast<ViewMode>((static_cast<int>(viewMode) + 1) % VIEW_MODE_COUNT);
+}
 
 void View::flipDisplay() {
-  display.setRotation(viewState.isDisplayFlipped() ? 2 : 0);
+  displayFlipped = !displayFlipped;
 }
 
 void View::render(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
-  switch (viewState.getViewMode()) {
-    case 0: renderCurrentSensorData(temperatureHistory, humidityHistory, pressureHistory); break;
-    case 1: renderTemperatureChart(temperatureHistory); break;
-    case 2: renderHumidityChart(humidityHistory); break;
-    case 3: renderPressureChart(pressureHistory); break;
+  switch (viewMode) {
+    case VIEW_MODE_ALL: renderCurrentSensorData(temperatureHistory, humidityHistory, pressureHistory); break;
+    case VIEW_MODE_TEMPERATURE: renderTemperatureChart(temperatureHistory); break;
+    case VIEW_MODE_HUMIDITY: renderHumidityChart(humidityHistory); break;
+    case VIEW_MODE_PRESSURE: renderPressureChart(pressureHistory); break;
     default: renderCurrentSensorData(temperatureHistory, humidityHistory, pressureHistory); break;
   }
 }
 
 void View::renderCurrentSensorData(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
   display.clearDisplay();
+  display.setRotation(displayFlipped ? 2 : 0);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(10, 8);
@@ -39,31 +53,34 @@ void View::renderCurrentSensorData(History& temperatureHistory, History& humidit
 
 void View::renderTemperatureChart(History& temperatureHistory) {
   display.clearDisplay();
+  display.setRotation(displayFlipped ? 2 : 0);
   drawChart(temperatureHistory);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(temperatureHistory.getValue(0) / 10.0f, 1) + "C");
+  display.print(String(temperatureHistory.getValue(0) / 10.0f, 1) + "C");
   display.display();
 }
 
 void View::renderHumidityChart(History& humidityHistory) {
   display.clearDisplay();
+  display.setRotation(displayFlipped ? 2 : 0);
   drawChart(humidityHistory);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(humidityHistory.getValue(0) / 10.0f, 1) + "%");
+  display.print(String(humidityHistory.getValue(0) / 10.0f, 1) + "%");
   display.display();
 }
 
 void View::renderPressureChart(History& pressureHistory) {
   display.clearDisplay();
+  display.setRotation(displayFlipped ? 2 : 0);
   drawChart(pressureHistory);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(pressureHistory.getValue(0) / 10.0f, 1) + "hPa");
+  display.print(String(pressureHistory.getValue(0) / 10.0f, 1) + "hPa");
   display.display();
 }
 

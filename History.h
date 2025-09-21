@@ -9,11 +9,12 @@ class History {
 public:
   History(int16_t* buffer, size_t size);
 
-  void fill(int16_t value);
-  void prepend(int16_t value);
   int16_t getValue(size_t index) const;
   int16_t getMaxValue() const;
   int16_t getMinValue() const;
+
+  void fill(int16_t value);
+  void prepend(int16_t value);
 
 private:
   size_t size;
