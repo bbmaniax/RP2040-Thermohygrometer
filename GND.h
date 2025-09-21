@@ -9,7 +9,7 @@ class GND {
 public:
   GND(uint8_t pin);
 
-  bool begin();
+  void begin();
 
 private:
   uint8_t pin;
