@@ -36,9 +36,10 @@ private:
   Adafruit_SSD1306& display;
   size_t width;
   size_t height;
+  uint8_t plotHorizontalStep;
+
   ViewMode viewMode;
   bool displayFlipped;
-  uint8_t plotHorizontalStep;
 };
 
 #endif  // __APP_VIEW_H__
