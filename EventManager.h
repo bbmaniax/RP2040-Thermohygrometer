@@ -3,27 +3,21 @@
 #ifndef __EVENT_MANAGER_H__
 #define __EVENT_MANAGER_H__
 
+class TimeKeeper;
 class Button;
 
 class EventManager {
 public:
-  EventManager(unsigned long sensorReadIntervalMs, Button& button1, Button& button2);
-
-  typedef void (*ButtonClickHandler)();
+  EventManager(TimeKeeper& timeKeeper1, Button& button1, Button& button2);
 
   bool begin();
   bool update();
 
-  bool shouldReadSensorData();
-  void markSensorDataAsRead();
-
+  TimeKeeper* getTimeKeeper(int index);
   Button* getButton(int index);
 
 private:
-  unsigned long sensorReadIntervalMs;
-  unsigned long lastMillis;
-  bool needSensorDataRead;
-
+  TimeKeeper& timeKeeper1;
   Button& button1;
   Button& button2;
 };

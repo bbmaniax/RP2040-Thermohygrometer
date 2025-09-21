@@ -4,33 +4,29 @@
 
 #include "Button.h"
 #include "EventManager.h"
+#include "TimeKeeper.h"
 
-EventManager::EventManager(unsigned long sensorReadIntervalMs, Button& button1, Button& button2) : sensorReadIntervalMs(sensorReadIntervalMs), lastMillis(0), needSensorDataRead(false), button1(button1), button2(button2) {}
+EventManager::EventManager(TimeKeeper& timeKeeper1, Button& button1, Button& button2) : timeKeeper1(timeKeeper1), button1(button1), button2(button2) {}
 
 bool EventManager::begin() {
-  lastMillis = 0;
-  needSensorDataRead = false;
+  timeKeeper1.begin();
   if (!button1.begin()) { return false; }
   if (!button2.begin()) { return false; }
   return true;
 }
 
 bool EventManager::update() {
-  unsigned long currentMillis = millis();
-  needSensorDataRead = (lastMillis == 0 || currentMillis - lastMillis >= sensorReadIntervalMs);
-
+  timeKeeper1.update();
   if (!button1.update()) { return false; }
   if (!button2.update()) { return false; }
   return true;
 }
 
-bool EventManager::shouldReadSensorData() {
-  return needSensorDataRead;
-}
-
-void EventManager::markSensorDataAsRead() {
-  lastMillis = millis();
-  needSensorDataRead = false;
+TimeKeeper* EventManager::getTimeKeeper(int index) {
+  switch (index) {
+    case 0: return &timeKeeper1;
+    default: return nullptr;
+  }
 }
 
 Button* EventManager::getButton(int index) {
