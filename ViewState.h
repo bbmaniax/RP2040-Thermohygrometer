@@ -18,7 +18,6 @@ public:
     VIEW_MODE_COUNT
   } ViewMode;
 
-public:
   void begin();
   ViewMode getViewMode() const;
   void switchToNextViewMode();

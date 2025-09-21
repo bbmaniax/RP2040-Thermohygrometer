@@ -6,8 +6,6 @@
 
 History::History(int16_t* buffer, size_t size) : size(size), buffer(buffer), minValue(0), maxValue(0) {}
 
-History::~History() {}
-
 void History::fill(int16_t value) {
   for (size_t i = 0; i < size; i++) { buffer[i] = value; }
   minValue = value;
