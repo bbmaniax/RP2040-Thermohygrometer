@@ -7,17 +7,25 @@
 
 class Adafruit_SSD1306;
 class History;
-class ViewState;
 
 class View {
 public:
-  View(ViewState& viewState, Adafruit_SSD1306& display, size_t width, size_t height, uint8_t plotHorizontalSpacing);
+  View(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t plotHorizontalSpacing);
 
   bool begin(bool displayOn = true);
-
+  void switchToNextViewMode();
+  void flipDisplay();
   void render(History& temperatureHistory, History& humidityHistory, History& pressureHistory);
 
 private:
+  typedef enum {
+    VIEW_MODE_ALL = 0,
+    VIEW_MODE_TEMPERATURE,
+    VIEW_MODE_HUMIDITY,
+    VIEW_MODE_PRESSURE,
+    VIEW_MODE_COUNT
+  } ViewMode;
+
   void renderCurrentSensorData(History& temperatureHistory, History& humidityHistory, History& pressureHistory);
   void renderTemperatureChart(History& temperatureHistory);
   void renderHumidityChart(History& humidityHistory);
@@ -25,10 +33,11 @@ private:
   void drawSensorValue(float value, const char* unit);
   void drawChart(History& history);
 
-  ViewState& viewState;
   Adafruit_SSD1306& display;
   size_t width;
   size_t height;
+  ViewMode viewMode;
+  bool displayFlipped;
   uint8_t plotHorizontalStep;
 };
 

@@ -13,7 +13,6 @@
 #include "SensorManager.h"
 #include "TimeKeeper.h"
 #include "View.h"
-#include "ViewState.h"
 
 #define BUTTON1_GND_PIN 28
 #define BUTTON1_INPUT_PIN 26
@@ -49,8 +48,7 @@ History temperatureHistory(temperatureHistoryBuffer, HISTORY_BUFFER_SIZE);
 History humidityHistory(humidityHistoryBuffer, HISTORY_BUFFER_SIZE);
 History pressureHistory(pressureHistoryBuffer, HISTORY_BUFFER_SIZE);
 
-ViewState viewState;
-View view(viewState, display, DISPLAY_WIDTH, DISPLAY_HEIGHT, PLOT_HORIZONTAL_SPACING);
+View view(display, DISPLAY_WIDTH, DISPLAY_HEIGHT, PLOT_HORIZONTAL_SPACING);
 
 void setup() {
   DEBUG_SERIAL_BEGIN(9600);
@@ -88,12 +86,12 @@ void loop() {
   }
 
   if (eventManager.getButton(0)->isClicked()) {
-    viewState.switchToNextViewMode();
+    view.switchToNextViewMode();
     needUpdate = true;
   }
 
   if (eventManager.getButton(1)->isClicked()) {
-    viewState.flipDisplay();
+    view.flipDisplay();
     needUpdate = true;
   }
 
