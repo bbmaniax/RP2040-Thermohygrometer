@@ -9,7 +9,9 @@ class AppState {
 public:
   AppState(unsigned long sensorReadIntervalMs);
 
+public:
   void begin();
+
   bool shouldReadSensorData();
   void markSensorDataAsRead();
 

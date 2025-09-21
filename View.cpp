@@ -10,10 +10,6 @@
 View::View(ViewState& viewState, Adafruit_SSD1306& display, size_t width, size_t height, uint8_t plotHorizontalSpacing)
     : viewState(viewState), display(display), width(width), height(height), plotHorizontalStep(plotHorizontalSpacing + 1) {}
 
-void View::flipDisplay() {
-  display.setRotation(viewState.isDisplayFlipped() ? 2 : 0);
-}
-
 void View::render(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
   switch (viewState.getViewMode()) {
     case 0: renderCurrentSensorData(temperatureHistory, humidityHistory, pressureHistory); break;
@@ -26,6 +22,7 @@ void View::render(History& temperatureHistory, History& humidityHistory, History
 
 void View::renderCurrentSensorData(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
   display.clearDisplay();
+  display.setRotation(viewState.isDisplayFlipped() ? 2 : 0);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(10, 8);
@@ -39,31 +36,34 @@ void View::renderCurrentSensorData(History& temperatureHistory, History& humidit
 
 void View::renderTemperatureChart(History& temperatureHistory) {
   display.clearDisplay();
+  display.setRotation(viewState.isDisplayFlipped() ? 2 : 0);
   drawChart(temperatureHistory);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(temperatureHistory.getValue(0) / 10.0f, 1) + "C");
+  display.print(String(temperatureHistory.getValue(0) / 10.0f, 1) + "C");
   display.display();
 }
 
 void View::renderHumidityChart(History& humidityHistory) {
   display.clearDisplay();
+  display.setRotation(viewState.isDisplayFlipped() ? 2 : 0);
   drawChart(humidityHistory);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(humidityHistory.getValue(0) / 10.0f, 1) + "%");
+  display.print(String(humidityHistory.getValue(0) / 10.0f, 1) + "%");
   display.display();
 }
 
 void View::renderPressureChart(History& pressureHistory) {
   display.clearDisplay();
+  display.setRotation(viewState.isDisplayFlipped() ? 2 : 0);
   drawChart(pressureHistory);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.println(String(pressureHistory.getValue(0) / 10.0f, 1) + "hPa");
+  display.print(String(pressureHistory.getValue(0) / 10.0f, 1) + "hPa");
   display.display();
 }
 

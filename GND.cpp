@@ -6,7 +6,8 @@
 
 GND::GND(uint8_t pin) : pin(pin) {}
 
-void GND::begin() {
+bool GND::begin() {
   pinMode(pin, OUTPUT);
   digitalWrite(pin, LOW);
+  return true;
 }
