@@ -6,12 +6,12 @@
 #include "History.h"
 #include "View.h"
 
-View::View(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t plotHorizontalSpacing = 1)
-    : display(display), width(width), height(height), viewMode(VIEW_MODE_ALL), displayFlipped(false), plotHorizontalStep(plotHorizontalSpacing + 1) {}
+View::View(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horizontalSpacing = 1)
+    : display(display), width(width), height(height), viewMode(VIEW_MODE_ALL), flipped(false), plotHorizontalStep(horizontalSpacing + 1) {}
 
 bool View::begin(bool displayOn) {
   viewMode = VIEW_MODE_ALL;
-  displayFlipped = false;
+  flipped = false;
   bool ok = display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   if (ok) {
     display.display();
@@ -23,8 +23,8 @@ void View::switchToNextViewMode() {
   viewMode = static_cast<ViewMode>((static_cast<int>(viewMode) + 1) % VIEW_MODE_COUNT);
 }
 
-void View::flipDisplay() {
-  displayFlipped = !displayFlipped;
+void View::flip() {
+  flipped = !flipped;
 }
 
 void View::render(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
@@ -39,7 +39,7 @@ void View::render(History& temperatureHistory, History& humidityHistory, History
 
 void View::renderCurrentSensorData(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
   display.clearDisplay();
-  display.setRotation(displayFlipped ? 2 : 0);
+  display.setRotation(flipped ? 2 : 0);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(10, 8);
@@ -53,7 +53,7 @@ void View::renderCurrentSensorData(History& temperatureHistory, History& humidit
 
 void View::renderTemperatureChart(History& temperatureHistory) {
   display.clearDisplay();
-  display.setRotation(displayFlipped ? 2 : 0);
+  display.setRotation(flipped ? 2 : 0);
   drawChart(temperatureHistory);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
@@ -64,7 +64,7 @@ void View::renderTemperatureChart(History& temperatureHistory) {
 
 void View::renderHumidityChart(History& humidityHistory) {
   display.clearDisplay();
-  display.setRotation(displayFlipped ? 2 : 0);
+  display.setRotation(flipped ? 2 : 0);
   drawChart(humidityHistory);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
@@ -75,7 +75,7 @@ void View::renderHumidityChart(History& humidityHistory) {
 
 void View::renderPressureChart(History& pressureHistory) {
   display.clearDisplay();
-  display.setRotation(displayFlipped ? 2 : 0);
+  display.setRotation(flipped ? 2 : 0);
   drawChart(pressureHistory);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);

@@ -10,11 +10,11 @@ class History;
 
 class View {
 public:
-  View(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t plotHorizontalSpacing);
+  View(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horizontalSpacing);
 
   bool begin(bool displayOn = true);
   void switchToNextViewMode();
-  void flipDisplay();
+  void flip();
   void render(History& temperatureHistory, History& humidityHistory, History& pressureHistory);
 
 private:
@@ -39,7 +39,7 @@ private:
   uint8_t plotHorizontalStep;
 
   ViewMode viewMode;
-  bool displayFlipped;
+  bool flipped;
 };
 
 #endif  // __APP_VIEW_H__

@@ -91,7 +91,7 @@ void loop() {
   }
 
   if (eventManager.getButton(1)->isClicked()) {
-    view.flipDisplay();
+    view.flip();
     needUpdate = true;
   }
 
