@@ -11,7 +11,7 @@ View::View(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horiz
     : viewMode(VIEW_MODE_ALL), display(display), width(width), height(height), plotHorizontalStep(horizontalSpacing + 1), flipped(flipped), initialFlipped(flipped) {}
 
 void View::begin(uint8_t i2cAddress, bool displayOn) {
-  DEBUG_SERIAL_PRINTLN("Initializing display: displayOn=" + String(displayOn));
+  DEBUG_SERIAL_PRINTLN("Initializing View: displayOn=" + String(displayOn));
   viewMode = VIEW_MODE_ALL;
   flipped = initialFlipped;
   if (!display.begin(SSD1306_SWITCHCAPVCC, i2cAddress)) { DEBUG_SERIAL_PRINTLN("Failed to initialize display"); }
@@ -42,7 +42,7 @@ void View::render(History& temperatureHistory, History& humidityHistory, History
 }
 
 void View::renderCurrentSensorData(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
-  DEBUG_SERIAL_PRINTLN("Rendering current sensor data");
+  // DEBUG_SERIAL_PRINTLN("Rendering current sensor data");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
   display.setTextSize(2);
@@ -57,7 +57,7 @@ void View::renderCurrentSensorData(History& temperatureHistory, History& humidit
 }
 
 void View::renderTemperatureChart(History& temperatureHistory) {
-  DEBUG_SERIAL_PRINTLN("Rendering temperature chart");
+  // DEBUG_SERIAL_PRINTLN("Rendering temperature chart");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
   drawChart(temperatureHistory);
@@ -69,7 +69,7 @@ void View::renderTemperatureChart(History& temperatureHistory) {
 }
 
 void View::renderHumidityChart(History& humidityHistory) {
-  DEBUG_SERIAL_PRINTLN("Rendering humidity chart");
+  // DEBUG_SERIAL_PRINTLN("Rendering humidity chart");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
   drawChart(humidityHistory);
@@ -81,7 +81,7 @@ void View::renderHumidityChart(History& humidityHistory) {
 }
 
 void View::renderPressureChart(History& pressureHistory) {
-  DEBUG_SERIAL_PRINTLN("Rendering pressure chart");
+  // DEBUG_SERIAL_PRINTLN("Rendering pressure chart");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
   drawChart(pressureHistory);
