@@ -18,8 +18,8 @@ public:
     int16_t pressure;
   };
 
-  bool begin();
-  bool readSensorData(SensorValues* values);
+  void begin();
+  void readSensorData(SensorValues* values);
 
 private:
   Adafruit_AHTX0& thermometer;
