@@ -6,16 +6,15 @@
 
 Button::Button(uint8_t pin, unsigned long debounceDelay) : pin(pin), debounceDelay(debounceDelay), currentState(false), lastState(false), lastReading(false), lastDebounceTime(0) {}
 
-bool Button::begin() {
+void Button::begin() {
   pinMode(pin, INPUT_PULLUP);
   currentState = false;
   lastState = currentState;
   lastReading = currentState;
   lastDebounceTime = millis();
-  return true;
 }
 
-bool Button::update() {
+void Button::update() {
   bool reading = !digitalRead(pin);
   if (reading != lastReading) { lastDebounceTime = millis(); }
   if ((millis() - lastDebounceTime) > debounceDelay) {
@@ -23,7 +22,6 @@ bool Button::update() {
     currentState = reading;
   }
   lastReading = reading;
-  return true;
 }
 
 bool Button::isPressed() {

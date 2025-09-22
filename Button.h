@@ -9,8 +9,8 @@ class Button {
 public:
   Button(uint8_t pin, unsigned long debounceDelay = 20);
 
-  bool begin();
-  bool update();
+  void begin();
+  void update();
 
   bool isPressed();
   bool isClicked();

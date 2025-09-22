@@ -10,8 +10,8 @@ class EventManager {
 public:
   EventManager(TimeKeeper& timeKeeper1, Button& button1, Button& button2);
 
-  bool begin();
-  bool update();
+  void begin();
+  void update();
 
   TimeKeeper* getTimeKeeper(int index);
   Button* getButton(int index);

@@ -3,23 +3,22 @@
 #include <Arduino.h>
 
 #include "Button.h"
+#include "DebugSerial.h"
 #include "EventManager.h"
 #include "TimeKeeper.h"
 
 EventManager::EventManager(TimeKeeper& timeKeeper1, Button& button1, Button& button2) : timeKeeper1(timeKeeper1), button1(button1), button2(button2) {}
 
-bool EventManager::begin() {
+void EventManager::begin() {
   timeKeeper1.begin();
-  if (!button1.begin()) { return false; }
-  if (!button2.begin()) { return false; }
-  return true;
+  button1.begin();
+  button2.begin();
 }
 
-bool EventManager::update() {
+void EventManager::update() {
   timeKeeper1.update();
-  if (!button1.update()) { return false; }
-  if (!button2.update()) { return false; }
-  return true;
+  button1.update();
+  button2.update();
 }
 
 TimeKeeper* EventManager::getTimeKeeper(int index) {

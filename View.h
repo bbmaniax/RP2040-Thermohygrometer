@@ -10,11 +10,11 @@ class History;
 
 class View {
 public:
-  View(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t plotHorizontalSpacing);
+  View(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horizontalSpacing = 1, bool flipped = false);
 
-  bool begin(bool displayOn = true);
+  void begin(uint8_t i2cAddress, bool displayOn = true);
   void switchToNextViewMode();
-  void flipDisplay();
+  void flip();
   void render(History& temperatureHistory, History& humidityHistory, History& pressureHistory);
 
 private:
@@ -33,13 +33,13 @@ private:
   void drawSensorValue(float value, const char* unit);
   void drawChart(History& history);
 
+  ViewMode viewMode;
   Adafruit_SSD1306& display;
   size_t width;
   size_t height;
   uint8_t plotHorizontalStep;
-
-  ViewMode viewMode;
-  bool displayFlipped;
+  bool flipped;
+  bool initialFlipped;
 };
 
 #endif  // __APP_VIEW_H__
