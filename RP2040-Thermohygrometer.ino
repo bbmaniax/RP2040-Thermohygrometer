@@ -39,6 +39,7 @@ Adafruit_BMP280 barometer;
 SensorManager sensorManager(thermometer, barometer);
 
 Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+View view(display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
 SensorManager::SensorValues sensorValues;
 int16_t temperatureHistoryBuffer[HISTORY_BUFFER_SIZE];
@@ -47,8 +48,6 @@ int16_t pressureHistoryBuffer[HISTORY_BUFFER_SIZE];
 History temperatureHistory(temperatureHistoryBuffer, HISTORY_BUFFER_SIZE);
 History humidityHistory(humidityHistoryBuffer, HISTORY_BUFFER_SIZE);
 History pressureHistory(pressureHistoryBuffer, HISTORY_BUFFER_SIZE);
-
-View view(display, DISPLAY_WIDTH, DISPLAY_HEIGHT, PLOT_HORIZONTAL_SPACING);
 
 void setup() {
   DEBUG_SERIAL_BEGIN(9600);

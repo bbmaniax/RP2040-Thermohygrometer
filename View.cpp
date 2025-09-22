@@ -3,31 +3,35 @@
 #include <Adafruit_SSD1306.h>
 #include <Arduino.h>
 
+#include "DebugSerial.h"
 #include "History.h"
 #include "View.h"
 
-View::View(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horizontalSpacing = 1)
-    : display(display), width(width), height(height), viewMode(VIEW_MODE_ALL), flipped(false), plotHorizontalStep(horizontalSpacing + 1) {}
+View::View(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horizontalSpacing, bool flipped)
+    : viewMode(VIEW_MODE_ALL), display(display), width(width), height(height), plotHorizontalStep(horizontalSpacing + 1), flipped(flipped), initialFlipped(flipped) {}
 
-bool View::begin(bool displayOn) {
+void View::begin(uint8_t i2cAddress, bool displayOn) {
+  DEBUG_SERIAL_PRINTLN("Initializing display: displayOn=" + String(displayOn));
   viewMode = VIEW_MODE_ALL;
-  flipped = false;
-  bool ok = display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-  if (ok) {
-    display.display();
-  }
-  return ok;
+  flipped = initialFlipped;
+  if (!display.begin(SSD1306_SWITCHCAPVCC, i2cAddress)) { DEBUG_SERIAL_PRINTLN("Failed to initialize display"); }
+  if (displayOn) { display.display(); }
 }
 
 void View::switchToNextViewMode() {
+  DEBUG_SERIAL_PRINTLN("Switching to next view mode: current mode=" + String(static_cast<int>(viewMode)));
   viewMode = static_cast<ViewMode>((static_cast<int>(viewMode) + 1) % VIEW_MODE_COUNT);
+  DEBUG_SERIAL_PRINTLN("New view mode=" + String(static_cast<int>(viewMode)));
 }
 
 void View::flip() {
+  DEBUG_SERIAL_PRINTLN("Flipping display orientation: current flipped=" + String(flipped));
   flipped = !flipped;
+  DEBUG_SERIAL_PRINTLN("New flipped=" + String(flipped));
 }
 
 void View::render(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
+  // DEBUG_SERIAL_PRINTLN("Rendering view: mode=" + String(static_cast<int>(viewMode)) + ", flipped=" + String(flipped));
   switch (viewMode) {
     case VIEW_MODE_ALL: renderCurrentSensorData(temperatureHistory, humidityHistory, pressureHistory); break;
     case VIEW_MODE_TEMPERATURE: renderTemperatureChart(temperatureHistory); break;
@@ -38,6 +42,7 @@ void View::render(History& temperatureHistory, History& humidityHistory, History
 }
 
 void View::renderCurrentSensorData(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
+  DEBUG_SERIAL_PRINTLN("Rendering current sensor data");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
   display.setTextSize(2);
@@ -52,6 +57,7 @@ void View::renderCurrentSensorData(History& temperatureHistory, History& humidit
 }
 
 void View::renderTemperatureChart(History& temperatureHistory) {
+  DEBUG_SERIAL_PRINTLN("Rendering temperature chart");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
   drawChart(temperatureHistory);
@@ -63,6 +69,7 @@ void View::renderTemperatureChart(History& temperatureHistory) {
 }
 
 void View::renderHumidityChart(History& humidityHistory) {
+  DEBUG_SERIAL_PRINTLN("Rendering humidity chart");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
   drawChart(humidityHistory);
@@ -74,6 +81,7 @@ void View::renderHumidityChart(History& humidityHistory) {
 }
 
 void View::renderPressureChart(History& pressureHistory) {
+  DEBUG_SERIAL_PRINTLN("Rendering pressure chart");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
   drawChart(pressureHistory);
@@ -85,6 +93,7 @@ void View::renderPressureChart(History& pressureHistory) {
 }
 
 void View::drawChart(History& history) {
+  DEBUG_SERIAL_PRINTLN("Drawing chart");
   int16_t minValue = history.getMinValue();
   int16_t maxValue = history.getMaxValue();
 
