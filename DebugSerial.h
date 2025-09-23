@@ -1,4 +1,4 @@
-// DebugSerial - Conditional debug serial output macros.
+// DebugSerial
 
 #ifndef __SERIAL_H__
 #define __SERIAL_H__
@@ -7,7 +7,8 @@
 
 #if defined(DEBUG)
 #define DEBUG_SERIAL_BEGIN(x) Serial.begin(x)
-#define DEBUG_SERIAL_WAIT_FOR() while (!Serial && millis() < 1000) { delay(100); }
+#define DEBUG_SERIAL_WAIT_FOR() \
+  while (!Serial && millis() < 5000) { delay(100); }
 #define DEBUG_SERIAL_PRINT(x) Serial.print(x)
 #define DEBUG_SERIAL_PRINTLN(x) Serial.println(x)
 #define DEBUG_SERIAL_PRINTHEX(x) Serial.print(x, HEX)

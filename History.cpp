@@ -1,4 +1,4 @@
-// History - Manages a history buffer for sensor data with min/max tracking.
+// History
 
 #include <Arduino.h>
 

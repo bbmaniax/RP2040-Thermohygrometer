@@ -1,4 +1,4 @@
-// GND - Manages a GPIO pin configured as ground (GND).
+// GND
 
 #include <Arduino.h>
 

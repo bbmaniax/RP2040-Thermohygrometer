@@ -1,4 +1,4 @@
-// Button - Handles button input with debouncing.
+// Button
 
 #include <Arduino.h>
 

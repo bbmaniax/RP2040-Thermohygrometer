@@ -1,4 +1,4 @@
-// Button - Handles button input with debouncing.
+// Button
 
 #ifndef __BUTTON_H__
 #define __BUTTON_H__

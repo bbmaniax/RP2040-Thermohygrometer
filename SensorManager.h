@@ -1,4 +1,4 @@
-// SensorManager - Manages sensor initialization and data retrieval.
+// SensorManager
 
 #ifndef __SENSOR_MANAGER_H__
 #define __SENSOR_MANAGER_H__
@@ -12,14 +12,14 @@ class SensorManager {
 public:
   SensorManager(Adafruit_AHTX0& thermometer, Adafruit_BMP280& barometer);
 
-  struct SensorValues {
+  struct SensorData {
     int16_t temperature;
     int16_t humidity;
     int16_t pressure;
   };
 
   void begin();
-  void readSensorData(SensorValues* values);
+  void readSensorData(SensorData* values);
 
 private:
   Adafruit_AHTX0& thermometer;

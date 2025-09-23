@@ -81,14 +81,14 @@ RP2040-Zero を使用したコンパクトな温湿度・気圧計です。
 マイコンに電源を供給すると作動します。
 定期的に温湿度・気圧を測定して、OLED に表示します。
 
-左ボタンを押すと、表示パターンが切り替わります。
+右ボタンを押すと、表示パターンが切り替わります。
 
 <img src="./images/pattern1.jpg" alt="テキスト" width="120" />
 <img src="./images/pattern2.jpg" alt="温度" width="120" />
 <img src="./images/pattern3.jpg" alt="湿度" width="120"  />
 <img src="./images/pattern4.jpg" alt="気圧" width="120"  />
 
-右ボタンを押すと、OLED の表示が上下反転します。
+左ボタンを押すと、表示が上下反転します。
 
 <img src="./images/pattern5.jpg" alt="上下反転" width="120"  />
 

@@ -1,18 +1,19 @@
-// View - Manages the display of sensor data and charts.
+// View
 
 #include <Adafruit_SSD1306.h>
 #include <Arduino.h>
 
 #include "DebugSerial.h"
 #include "History.h"
+#include "Model.h"
 #include "View.h"
 
-View::View(Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horizontalSpacing, bool flipped)
-    : viewMode(VIEW_MODE_ALL), display(display), width(width), height(height), plotHorizontalStep(horizontalSpacing + 1), flipped(flipped), initialFlipped(flipped) {}
+View::View(Model& model, Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horizontalSpacing, bool flipped)
+    : model(model), viewMode(VIEW_MODE_ALL_TEXT), display(display), width(width), height(height), plotHorizontalStep(horizontalSpacing + 1), flipped(flipped), initialFlipped(flipped) {}
 
 void View::begin(uint8_t i2cAddress, bool displayOn) {
-  DEBUG_SERIAL_PRINTLN("Initializing display: displayOn=" + String(displayOn));
-  viewMode = VIEW_MODE_ALL;
+  // DEBUG_SERIAL_PRINTLN("Initializing View: displayOn=" + String(displayOn));
+  viewMode = VIEW_MODE_ALL_TEXT;
   flipped = initialFlipped;
   if (!display.begin(SSD1306_SWITCHCAPVCC, i2cAddress)) { DEBUG_SERIAL_PRINTLN("Failed to initialize display"); }
   if (displayOn) { display.display(); }
@@ -30,87 +31,85 @@ void View::flip() {
   DEBUG_SERIAL_PRINTLN("New flipped=" + String(flipped));
 }
 
-void View::render(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
+void View::render() {
   // DEBUG_SERIAL_PRINTLN("Rendering view: mode=" + String(static_cast<int>(viewMode)) + ", flipped=" + String(flipped));
   switch (viewMode) {
-    case VIEW_MODE_ALL: renderCurrentSensorData(temperatureHistory, humidityHistory, pressureHistory); break;
-    case VIEW_MODE_TEMPERATURE: renderTemperatureChart(temperatureHistory); break;
-    case VIEW_MODE_HUMIDITY: renderHumidityChart(humidityHistory); break;
-    case VIEW_MODE_PRESSURE: renderPressureChart(pressureHistory); break;
-    default: renderCurrentSensorData(temperatureHistory, humidityHistory, pressureHistory); break;
+    case VIEW_MODE_ALL_TEXT: renderAllText(display); break;
+    case VIEW_MODE_TEMPERATURE_CHART: renderTemperatureChart(display); break;
+    case VIEW_MODE_HUMIDITY_CHART: renderHumidityChart(display); break;
+    case VIEW_MODE_PRESSURE_CHART: renderPressureChart(display); break;
+    default: renderAllText(display); break;
   }
 }
 
-void View::renderCurrentSensorData(History& temperatureHistory, History& humidityHistory, History& pressureHistory) {
-  DEBUG_SERIAL_PRINTLN("Rendering current sensor data");
+void View::renderAllText(Adafruit_SSD1306& display) {
+  // DEBUG_SERIAL_PRINTLN("Rendering all text");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(10, 8);
-  display.printf("%7s", (String(temperatureHistory.getValue(0) / 10.0f, 1) + "C").c_str());
+  display.printf("%7s", (String(model.getTemperature() / 10.0f, 1) + "C").c_str());
   display.setCursor(10, 24);
-  display.printf("%7s", (String(humidityHistory.getValue(0) / 10.0f, 1) + "%").c_str());
+  display.printf("%7s", (String(model.getHumidity() / 10.0f, 1) + "%").c_str());
   display.setCursor(10, 40);
-  display.printf("%9s", (String(pressureHistory.getValue(0) / 10.0f, 1) + "hPa").c_str());
+  display.printf("%9s", (String(model.getPressure() / 10.0f, 1) + "hPa").c_str());
   display.display();
 }
 
-void View::renderTemperatureChart(History& temperatureHistory) {
-  DEBUG_SERIAL_PRINTLN("Rendering temperature chart");
+void View::renderTemperatureChart(Adafruit_SSD1306& display) {
+  // DEBUG_SERIAL_PRINTLN("Rendering temperature chart");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
-  drawChart(temperatureHistory);
+  drawChart(display, 0, 17, width, height - 17, model.getTemperatureHistory());
+  display.fillRect(0, 0, width, 16, SSD1306_BLACK);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.print(String(temperatureHistory.getValue(0) / 10.0f, 1) + "C");
+  display.print(String(model.getTemperature() / 10.0f, 1) + "C");
   display.display();
 }
 
-void View::renderHumidityChart(History& humidityHistory) {
-  DEBUG_SERIAL_PRINTLN("Rendering humidity chart");
+void View::renderHumidityChart(Adafruit_SSD1306& display) {
+  // DEBUG_SERIAL_PRINTLN("Rendering humidity chart");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
-  drawChart(humidityHistory);
+  drawChart(display, 0, 17, width, height - 17, model.getHumidityHistory());
+  display.fillRect(0, 0, width, 16, SSD1306_BLACK);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.print(String(humidityHistory.getValue(0) / 10.0f, 1) + "%");
+  display.print(String(model.getHumidity() / 10.0f, 1) + "%");
   display.display();
 }
 
-void View::renderPressureChart(History& pressureHistory) {
-  DEBUG_SERIAL_PRINTLN("Rendering pressure chart");
+void View::renderPressureChart(Adafruit_SSD1306& display) {
+  // DEBUG_SERIAL_PRINTLN("Rendering pressure chart");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
-  drawChart(pressureHistory);
+  drawChart(display, 0, 17, width, height - 17, model.getPressureHistory());
+  display.fillRect(0, 0, width, 16, SSD1306_BLACK);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.print(String(pressureHistory.getValue(0) / 10.0f, 1) + "hPa");
+  display.print(String(model.getPressure() / 10.0f, 1) + "hPa");
   display.display();
 }
 
-void View::drawChart(History& history) {
+void View::drawChart(Adafruit_SSD1306& display, int16_t x, int16_t y, int16_t w, int16_t h, History& history){
   DEBUG_SERIAL_PRINTLN("Drawing chart");
   int16_t minValue = history.getMinValue();
   int16_t maxValue = history.getMaxValue();
 
-  int16_t tempRange = maxValue - minValue;
-  if (tempRange < 1) { tempRange = 1; }
+  int16_t range = maxValue - minValue;
+  if (range < 1) { range = 1; }
 
   uint8_t step = plotHorizontalStep;
-  for (uint8_t i = 0; i < width - 1; i++) {
+  for (uint8_t i = 0; i < w - 1; i++) {
     int16_t currentValue = history.getValue(i);
     int16_t nextValue = history.getValue(i + 1);
-
-    uint8_t currentY = 17 + (uint8_t)((maxValue - currentValue) * (height - 1 - 17) / tempRange);
-    uint8_t nextY = 17 + (uint8_t)((maxValue - nextValue) * (height - 1 - 17) / tempRange);
-
-    if (currentY >= height) currentY = height - 1;
-    if (nextY >= height) nextY = height - 1;
-
-    display.drawLine(width - (i * step) - 1, currentY, width - ((i + 1) * step) - 1, nextY, SSD1306_WHITE);
+    int16_t currentY = y + (int16_t)((maxValue - currentValue) * (h - 1) / range);
+    int16_t nextY = y + (int16_t)((maxValue - nextValue) * (h - 1) / range);
+    display.drawLine(w - (i * step) - 1, currentY, w - ((i + 1) * step) - 1, nextY, SSD1306_WHITE);
   }
 }

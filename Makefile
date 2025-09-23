@@ -1,13 +1,15 @@
 TARGET ?= RP2040-Thermohygrometer.ino
-BUILD_CONFIG ?= ./arduino-cli.yaml
 FQBN ?= rp2040:rp2040:rpipico
 CORES ?= rp2040:rp2040
 LIBS ?= "Adafruit AHTX0" "Adafruit BMP280 Library" "Adafruit GFX Library" "Adafruit SSD1306"
+
+BUILD_CONFIG ?= ./arduino-cli.yaml
+BUILD_DIR ?= ./build
+
 DEPLOY_CMD ?= /mnt/c/Windows/System32/robocopy.exe
+DEPLOY_DIR ?= D:/
 
 TEMP_DIR ?= ./tmp
-BUILD_DIR ?= ./build
-DEPLOY_DIR ?= D:/
 
 .PHONY: all
 all: clean install build
