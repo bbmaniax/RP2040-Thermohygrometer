@@ -91,13 +91,13 @@ void loop() {
 
   if (eventManager.getButton(0)->isClicked()) {
     DEBUG_SERIAL_PRINTLN("Button 1 clicked");
-    view.switchToNextViewMode();
+    view.flip();
     needUpdate = true;
   }
 
   if (eventManager.getButton(1)->isClicked()) {
     DEBUG_SERIAL_PRINTLN("Button 2 clicked");
-    view.flip();
+    view.switchToNextViewMode();
     needUpdate = true;
   }
 

@@ -61,7 +61,8 @@ void View::renderTemperatureChart(Adafruit_SSD1306& display) {
   // DEBUG_SERIAL_PRINTLN("Rendering temperature chart");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
-  drawChart(display, model.getTemperatureHistory());
+  drawChart(display, 0, 17, width, height - 17, model.getTemperatureHistory());
+  display.fillRect(0, 0, width, 16, SSD1306_BLACK);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
@@ -73,7 +74,8 @@ void View::renderHumidityChart(Adafruit_SSD1306& display) {
   // DEBUG_SERIAL_PRINTLN("Rendering humidity chart");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
-  drawChart(display, model.getHumidityHistory());
+  drawChart(display, 0, 17, width, height - 17, model.getHumidityHistory());
+  display.fillRect(0, 0, width, 16, SSD1306_BLACK);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
@@ -85,7 +87,8 @@ void View::renderPressureChart(Adafruit_SSD1306& display) {
   // DEBUG_SERIAL_PRINTLN("Rendering pressure chart");
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
-  drawChart(display, model.getPressureHistory());
+  drawChart(display, 0, 17, width, height - 17, model.getPressureHistory());
+  display.fillRect(0, 0, width, 16, SSD1306_BLACK);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
@@ -93,25 +96,20 @@ void View::renderPressureChart(Adafruit_SSD1306& display) {
   display.display();
 }
 
-void View::drawChart(Adafruit_SSD1306& display, History& history) {
+void View::drawChart(Adafruit_SSD1306& display, int16_t x, int16_t y, int16_t w, int16_t h, History& history){
   DEBUG_SERIAL_PRINTLN("Drawing chart");
   int16_t minValue = history.getMinValue();
   int16_t maxValue = history.getMaxValue();
 
-  int16_t tempRange = maxValue - minValue;
-  if (tempRange < 1) { tempRange = 1; }
+  int16_t range = maxValue - minValue;
+  if (range < 1) { range = 1; }
 
   uint8_t step = plotHorizontalStep;
-  for (uint8_t i = 0; i < width - 1; i++) {
+  for (uint8_t i = 0; i < w - 1; i++) {
     int16_t currentValue = history.getValue(i);
     int16_t nextValue = history.getValue(i + 1);
-
-    uint8_t currentY = 17 + (uint8_t)((maxValue - currentValue) * (height - 1 - 17) / tempRange);
-    uint8_t nextY = 17 + (uint8_t)((maxValue - nextValue) * (height - 1 - 17) / tempRange);
-
-    if (currentY >= height) currentY = height - 1;
-    if (nextY >= height) nextY = height - 1;
-
-    display.drawLine(width - (i * step) - 1, currentY, width - ((i + 1) * step) - 1, nextY, SSD1306_WHITE);
+    int16_t currentY = y + (int16_t)((maxValue - currentValue) * (h - 1) / range);
+    int16_t nextY = y + (int16_t)((maxValue - nextValue) * (h - 1) / range);
+    display.drawLine(w - (i * step) - 1, currentY, w - ((i + 1) * step) - 1, nextY, SSD1306_WHITE);
   }
 }

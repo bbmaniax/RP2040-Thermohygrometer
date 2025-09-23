@@ -32,7 +32,7 @@ private:
   void renderHumidityChart(Adafruit_SSD1306& display);
   void renderPressureChart(Adafruit_SSD1306& display);
 
-  void drawChart(Adafruit_SSD1306& display, History& history);
+  void drawChart(Adafruit_SSD1306& display, int16_t x, int16_t y, int16_t w, int16_t h, History& history);
 
   Model& model;
   ViewMode viewMode;
