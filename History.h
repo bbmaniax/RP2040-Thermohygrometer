@@ -1,4 +1,4 @@
-// History - Manages a history buffer for sensor data with min/max tracking.
+// History
 
 #ifndef __HISTORY_H__
 #define __HISTORY_H__

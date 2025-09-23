@@ -1,4 +1,4 @@
-// EventManager - Manages input events from buttons
+// EventManager
 
 #include <Arduino.h>
 
@@ -10,7 +10,7 @@
 EventManager::EventManager(Button& button1, Button& button2, TimeKeeper& timeKeeper1) : button1(button1), button2(button2), timeKeeper1(timeKeeper1) {}
 
 void EventManager::begin() {
-  DEBUG_SERIAL_PRINTLN("Initializing EventManager");
+  // DEBUG_SERIAL_PRINTLN("Initializing EventManager");
   button1.begin();
   button2.begin();
   timeKeeper1.begin();

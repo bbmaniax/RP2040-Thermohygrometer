@@ -1,4 +1,4 @@
-// TimeKeeper - A simple time interval manager
+// TimeKeeper
 
 #include <Arduino.h>
 

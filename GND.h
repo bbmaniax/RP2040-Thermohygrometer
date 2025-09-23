@@ -1,4 +1,4 @@
-// GND - Manages a GPIO pin configured as ground (GND).
+// GND
 
 #ifndef __GND_H__
 #define __GND_H__

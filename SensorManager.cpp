@@ -1,4 +1,4 @@
-// SensorManager - Manages sensor initialization and data retrieval.
+// SensorManager
 
 #include <Adafruit_AHTX0.h>
 #include <Adafruit_BMP280.h>
@@ -10,7 +10,7 @@
 SensorManager::SensorManager(Adafruit_AHTX0& thermometer, Adafruit_BMP280& barometer) : thermometer(thermometer), barometer(barometer) {}
 
 void SensorManager::begin() {
-  DEBUG_SERIAL_PRINTLN("Initializing SensorManager");
+  // DEBUG_SERIAL_PRINTLN("Initializing SensorManager");
   if (!thermometer.begin()) { DEBUG_SERIAL_PRINTLN("Failed to initialize AHTX0!"); }
   if (!barometer.begin()) { DEBUG_SERIAL_PRINTLN("Failed to initialize BMP280!"); }
 }

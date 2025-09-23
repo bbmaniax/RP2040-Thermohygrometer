@@ -1,4 +1,4 @@
-// RP2040-Thermohygrometer - Main application file for the thermohygrometer project.
+// RP2040-Thermohygrometer
 
 #include <Adafruit_AHTX0.h>
 #include <Adafruit_BMP280.h>

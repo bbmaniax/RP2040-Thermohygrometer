@@ -1,4 +1,4 @@
-// SensorManager - Manages sensor initialization and data retrieval.
+// SensorManager
 
 #ifndef __SENSOR_MANAGER_H__
 #define __SENSOR_MANAGER_H__

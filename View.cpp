@@ -1,4 +1,4 @@
-// View - Manages the display of sensor data and charts.
+// View
 
 #include <Adafruit_SSD1306.h>
 #include <Arduino.h>
@@ -12,7 +12,7 @@ View::View(Model& model, Adafruit_SSD1306& display, size_t width, size_t height,
     : model(model), viewMode(VIEW_MODE_ALL_TEXT), display(display), width(width), height(height), plotHorizontalStep(horizontalSpacing + 1), flipped(flipped), initialFlipped(flipped) {}
 
 void View::begin(uint8_t i2cAddress, bool displayOn) {
-  DEBUG_SERIAL_PRINTLN("Initializing View: displayOn=" + String(displayOn));
+  // DEBUG_SERIAL_PRINTLN("Initializing View: displayOn=" + String(displayOn));
   viewMode = VIEW_MODE_ALL_TEXT;
   flipped = initialFlipped;
   if (!display.begin(SSD1306_SWITCHCAPVCC, i2cAddress)) { DEBUG_SERIAL_PRINTLN("Failed to initialize display"); }

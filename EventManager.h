@@ -1,4 +1,4 @@
-// EventManager - Manages input events from buttons
+// EventManager
 
 #ifndef __EVENT_MANAGER_H__
 #define __EVENT_MANAGER_H__

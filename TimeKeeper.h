@@ -1,4 +1,4 @@
-// TimerKeeper - A simple time interval manager
+// TimerKeeper
 
 #ifndef __TIME_KEEPER_H__
 #define __TIME_KEEPER_H__

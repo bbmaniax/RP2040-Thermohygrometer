@@ -1,4 +1,4 @@
-// DebugSerial - Conditional debug serial output macros.
+// DebugSerial
 
 #ifndef __SERIAL_H__
 #define __SERIAL_H__

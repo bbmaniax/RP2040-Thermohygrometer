@@ -1,4 +1,4 @@
-// View - Manages the display of sensor data and charts.
+// View
 
 #ifndef __APP_VIEW_H__
 #define __APP_VIEW_H__
