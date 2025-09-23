@@ -49,11 +49,11 @@ void View::renderAllText(Adafruit_SSD1306& display) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(10, 8);
-  display.printf("%7s", (String(model.getTemperature() / 10.0f, 1) + "C").c_str());
+  display.printf("%7s", (String(model.getLatestTemperature() / 10.0f, 1) + "C").c_str());
   display.setCursor(10, 24);
-  display.printf("%7s", (String(model.getHumidity() / 10.0f, 1) + "%").c_str());
+  display.printf("%7s", (String(model.getLatestHumidity() / 10.0f, 1) + "%").c_str());
   display.setCursor(10, 40);
-  display.printf("%9s", (String(model.getPressure() / 10.0f, 1) + "hPa").c_str());
+  display.printf("%9s", (String(model.getLatestPressure() / 10.0f, 1) + "hPa").c_str());
   display.display();
 }
 
@@ -66,7 +66,7 @@ void View::renderTemperatureChart(Adafruit_SSD1306& display) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.print(String(model.getTemperature() / 10.0f, 1) + "C");
+  display.print(String(model.getLatestTemperature() / 10.0f, 1) + "C");
   display.display();
 }
 
@@ -79,7 +79,7 @@ void View::renderHumidityChart(Adafruit_SSD1306& display) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.print(String(model.getHumidity() / 10.0f, 1) + "%");
+  display.print(String(model.getLatestHumidity() / 10.0f, 1) + "%");
   display.display();
 }
 
@@ -92,7 +92,7 @@ void View::renderPressureChart(Adafruit_SSD1306& display) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-  display.print(String(model.getPressure() / 10.0f, 1) + "hPa");
+  display.print(String(model.getLatestPressure() / 10.0f, 1) + "hPa");
   display.display();
 }
 

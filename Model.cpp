@@ -34,14 +34,14 @@ History& Model::getPressureHistory() {
   return pressureHistory;
 }
 
-int16_t Model::getTemperature() {
+int16_t Model::getLatestTemperature() {
   return temperatureHistory.getValue(0);
 }
 
-int16_t Model::getHumidity() {
+int16_t Model::getLatestHumidity() {
   return humidityHistory.getValue(0);
 }
 
-int16_t Model::getPressure() {
+int16_t Model::getLatestPressure() {
   return pressureHistory.getValue(0);
 }
