@@ -11,6 +11,7 @@
 #include "EventManager.h"
 #include "GND.h"
 #include "History.h"
+#include "Model.h"
 #include "SensorManager.h"
 #include "TimeKeeper.h"
 #include "View.h"
@@ -30,26 +31,26 @@
 #define PLOT_HORIZONTAL_SPACING 1
 
 GND gnd1(BUTTON1_GND_PIN);
-
-TimeKeeper timeKeeper1(SENSOR_READ_INTERVAL_MS);
 Button button1(BUTTON1_INPUT_PIN);
 Button button2(BUTTON2_INPUT_PIN);
-EventManager eventManager(timeKeeper1, button1, button2);
-
 Adafruit_AHTX0 thermometer;
 Adafruit_BMP280 barometer;
-SensorManager sensorManager(thermometer, barometer);
-
 Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
-View view(display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+TimeKeeper timeKeeper1(SENSOR_READ_INTERVAL_MS);
 
-SensorManager::SensorValues sensorValues;
+SensorManager::SensorData sensorData;
 int16_t temperatureHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t humidityHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t pressureHistoryBuffer[HISTORY_BUFFER_SIZE];
 History temperatureHistory(temperatureHistoryBuffer, HISTORY_BUFFER_SIZE);
 History humidityHistory(humidityHistoryBuffer, HISTORY_BUFFER_SIZE);
 History pressureHistory(pressureHistoryBuffer, HISTORY_BUFFER_SIZE);
+
+EventManager eventManager(button1, button2, timeKeeper1);
+SensorManager sensorManager(thermometer, barometer);
+
+Model model(temperatureHistory, humidityHistory, pressureHistory);
+View view(model, display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
 void setup() {
   DEBUG_SERIAL_BEGIN(9600);
@@ -59,13 +60,12 @@ void setup() {
   DEBUG_SERIAL_PRINTLN("Thermohygrometer");
 
   gnd1.begin();
+
   eventManager.begin();
   sensorManager.begin();
 
-  sensorManager.readSensorData(&sensorValues);
-  temperatureHistory.fill(sensorValues.temperature);
-  humidityHistory.fill(sensorValues.humidity);
-  pressureHistory.fill(sensorValues.pressure);
+  sensorManager.readSensorData(&sensorData);
+  model.begin(sensorData.temperature, sensorData.humidity, sensorData.pressure);
 
   view.begin(DISPLAY_I2C_ADDRESS);
   delay(1000);
@@ -83,10 +83,8 @@ void loop() {
 
   if (eventManager.getTimeKeeper(0)->isTimeUp()) {
     // DEBUG_SERIAL_PRINTLN("Time to read sensors");
-    sensorManager.readSensorData(&sensorValues);
-    temperatureHistory.prepend(sensorValues.temperature);
-    humidityHistory.prepend(sensorValues.humidity);
-    pressureHistory.prepend(sensorValues.pressure);
+    sensorManager.readSensorData(&sensorData);
+    model.update(sensorData.temperature, sensorData.humidity, sensorData.pressure);
     eventManager.getTimeKeeper(0)->reset();
     needUpdate = true;
   }
@@ -105,7 +103,7 @@ void loop() {
 
   if (needUpdate) {
     // DEBUG_SERIAL_PRINTLN("Time to render views");
-    view.render(temperatureHistory, humidityHistory, pressureHistory);
+    view.render();
     needUpdate = false;
   }
 

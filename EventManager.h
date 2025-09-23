@@ -3,23 +3,23 @@
 #ifndef __EVENT_MANAGER_H__
 #define __EVENT_MANAGER_H__
 
-class TimeKeeper;
 class Button;
+class TimeKeeper;
 
 class EventManager {
 public:
-  EventManager(TimeKeeper& timeKeeper1, Button& button1, Button& button2);
+  EventManager(Button& button1, Button& button2, TimeKeeper& timeKeeper1);
 
   void begin();
   void update();
 
-  TimeKeeper* getTimeKeeper(int index);
   Button* getButton(int index);
+  TimeKeeper* getTimeKeeper(int index);
 
 private:
-  TimeKeeper& timeKeeper1;
   Button& button1;
   Button& button2;
+  TimeKeeper& timeKeeper1;
 };
 
 #endif  // __EVENT_MANAGER_H__
