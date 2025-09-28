@@ -20,10 +20,10 @@ clean:
 	find . -type f -exec chmod -x {} +
 
 .PHONY: build
-build: build/rp2040
+build: build/rpipico
 
-.PHONY: build/rp2040
-build/rp2040:
+.PHONY: build/rpipico
+build/rpipico:
 	arduino-cli --config-file $(BUILD_CONFIG) compile --fqbn $(FQBN) --export-binaries $(if $(filter-out undefined,$(origin DEBUG)),--build-property "build.extra_flags=-DDEBUG") $(TARGET)
 
 .PHONY: install
