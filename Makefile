@@ -1,4 +1,4 @@
-TARGET ?= RP2040-Thermohygrometer.ino
+SKETCH ?= RP2040-Thermohygrometer.ino
 FQBN ?= rp2040:rp2040:rpipico
 CORES ?= rp2040:rp2040
 LIBS ?= "Adafruit AHTX0" "Adafruit BMP280 Library" "Adafruit GFX Library" "Adafruit SSD1306"
@@ -20,11 +20,11 @@ clean:
 	find . -type f -exec chmod -x {} +
 
 .PHONY: build
-build: build/rp2040
+build: build/rpipico
 
-.PHONY: build/rp2040
-build/rp2040:
-	arduino-cli --config-file $(BUILD_CONFIG) compile --fqbn $(FQBN) --export-binaries $(if $(filter-out undefined,$(origin DEBUG)),--build-property "build.extra_flags=-DDEBUG") $(TARGET)
+.PHONY: build/rpipico
+build/rpipico:
+	arduino-cli --config-file $(BUILD_CONFIG) compile --fqbn $(FQBN) --export-binaries $(if $(filter-out undefined,$(origin DEBUG)),--build-property "build.extra_flags=-DDEBUG") $(SKETCH)
 
 .PHONY: install
 install: core/install lib/install

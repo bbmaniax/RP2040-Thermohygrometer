@@ -56,6 +56,7 @@ void setup() {
   DEBUG_SERIAL_PRINTLN("Thermohygrometer");
 
   gnd1.begin();
+
   eventManager.begin();
   sensorManager.begin();
 
@@ -125,7 +126,6 @@ void scan(TwoWire& wire, Adafruit_SSD1306& display) {
       if (address < 16) DEBUG_SERIAL_PRINT("0");
       DEBUG_SERIAL_PRINTHEX(address);
       DEBUG_SERIAL_PRINT(" ");
-
       if (deviceCount == 0) {
         display.clearDisplay();
         display.setCursor(0, 0);
@@ -138,10 +138,10 @@ void scan(TwoWire& wire, Adafruit_SSD1306& display) {
   }
 
   if (deviceCount == 0) {
+    DEBUG_SERIAL_PRINTLN("NO DEVICES");
     display.clearDisplay();
     display.setCursor(0, 0);
     display.print("NO DEVICES");
     display.display();
-    DEBUG_SERIAL_PRINTLN("NO DEVICES");
   }
 }

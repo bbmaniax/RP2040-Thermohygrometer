@@ -19,9 +19,9 @@ public:
   History& getHumidityHistory();
   History& getPressureHistory();
 
-  int16_t getTemperature();
-  int16_t getHumidity();
-  int16_t getPressure();
+  int16_t getLatestTemperature();
+  int16_t getLatestHumidity();
+  int16_t getLatestPressure();
 
 private:
   History& temperatureHistory;
