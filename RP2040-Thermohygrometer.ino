@@ -61,7 +61,7 @@ void setup() {
   sensorManager.begin();
 
   SensorManager::SensorData sensorData;
-  sensorManager.readSensorData(&sensorData);
+  sensorManager.acquire(&sensorData);
 
   model.begin(sensorData.temperature, sensorData.humidity, sensorData.pressure);
   view.begin(DISPLAY_I2C_ADDRESS);
@@ -81,7 +81,7 @@ void loop() {
   if (eventManager.getTimeKeeper(0)->isTimeUp()) {
     // DEBUG_SERIAL_PRINTLN("Time to read sensors");
     SensorManager::SensorData sensorData;
-    sensorManager.readSensorData(&sensorData);
+    sensorManager.acquire(&sensorData);
     model.update(sensorData.temperature, sensorData.humidity, sensorData.pressure);
     eventManager.getTimeKeeper(0)->reset();
     needUpdate = true;

@@ -19,7 +19,7 @@ public:
   };
 
   void begin();
-  void readSensorData(SensorData* values);
+  void acquire(SensorData* values);
 
 private:
   Adafruit_AHTX0& thermometer;

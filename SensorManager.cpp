@@ -15,7 +15,7 @@ void SensorManager::begin() {
   if (!barometer.begin()) { DEBUG_SERIAL_PRINTLN("Failed to initialize BMP280!"); }
 }
 
-void SensorManager::readSensorData(SensorData* values) {
+void SensorManager::acquire(SensorData* values) {
   // DEBUG_SERIAL_PRINTLN("Reading sensor data");
   sensors_event_t temperatureEvent, humidityEvent;
   if (thermometer.getEvent(&humidityEvent, &temperatureEvent)) {
