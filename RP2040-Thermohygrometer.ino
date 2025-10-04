@@ -80,6 +80,12 @@ void loop() {
     needRender = true;
   }
 
+  if (eventManager.getButton(0)->isLongPressed()) {
+    DEBUG_SERIAL_PRINTLN("Button 1 long pressed");
+    view.flip();
+    needRender = true;
+  }
+
   if (eventManager.getButton(0)->isClicked()) {
     DEBUG_SERIAL_PRINTLN("Button 1 clicked");
     view.switchToNextViewMode();
