@@ -76,7 +76,7 @@ void setup() {
 void loop() {
   eventManager.update();
 
-  static bool needUpdate = true;
+  static bool needRender = true;
 
   if (eventManager.getTimeKeeper(0)->isTimeUp()) {
     // DEBUG_SERIAL_PRINTLN("Time to read sensors");
@@ -84,25 +84,25 @@ void loop() {
     sensorManager.acquire(&sensorData);
     model.update(sensorData.temperature, sensorData.humidity, sensorData.pressure);
     eventManager.getTimeKeeper(0)->reset();
-    needUpdate = true;
+    needRender = true;
   }
 
   if (eventManager.getButton(0)->isClicked()) {
     DEBUG_SERIAL_PRINTLN("Button 1 clicked");
     view.flip();
-    needUpdate = true;
+    needRender = true;
   }
 
   if (eventManager.getButton(1)->isClicked()) {
     DEBUG_SERIAL_PRINTLN("Button 2 clicked");
     view.switchToNextViewMode();
-    needUpdate = true;
+    needRender = true;
   }
 
-  if (needUpdate) {
+  if (needRender) {
     // DEBUG_SERIAL_PRINTLN("Time to render views");
     view.render();
-    needUpdate = false;
+    needRender = false;
   }
 
   delay(10);
