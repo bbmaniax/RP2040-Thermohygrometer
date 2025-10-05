@@ -15,7 +15,7 @@
 #include "TimeKeeper.h"
 #include "View.h"
 
-#define BUTTON1_INPUT_PIN 29
+#define BUTTON_PIN 29
 #define SENSOR_READ_INTERVAL_MS 3000
 #define DISPLAY_I2C_ADDRESS 0x3C
 #define DISPLAY_WIDTH 128
@@ -24,21 +24,21 @@
 #define HISTORY_BUFFER_SIZE (DISPLAY_WIDTH / (PLOT_HORIZONTAL_SPACING + 1) + PLOT_HORIZONTAL_SPACING)
 #define PLOT_HORIZONTAL_SPACING 1
 
+Button button(BUTTON_PIN);
+TimeKeeper timeKeeper1(SENSOR_READ_INTERVAL_MS);
+Adafruit_AHTX0 thermometer;
+Adafruit_BMP280 barometer;
+Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+
+EventManager eventManager(button, timeKeeper1);
+SensorManager sensorManager(thermometer, barometer);
+
 int16_t temperatureHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t humidityHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t pressureHistoryBuffer[HISTORY_BUFFER_SIZE];
 History temperatureHistory(temperatureHistoryBuffer, HISTORY_BUFFER_SIZE);
 History humidityHistory(humidityHistoryBuffer, HISTORY_BUFFER_SIZE);
 History pressureHistory(pressureHistoryBuffer, HISTORY_BUFFER_SIZE);
-
-Button button1(BUTTON1_INPUT_PIN);
-TimeKeeper timeKeeper1(SENSOR_READ_INTERVAL_MS);
-Adafruit_AHTX0 thermometer;
-Adafruit_BMP280 barometer;
-Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
-
-EventManager eventManager(button1, timeKeeper1);
-SensorManager sensorManager(thermometer, barometer);
 
 Model model(temperatureHistory, humidityHistory, pressureHistory);
 View view(model,display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
@@ -60,9 +60,9 @@ void setup() {
   view.begin(DISPLAY_I2C_ADDRESS);
   delay(1000);
 
-  if (digitalRead(BUTTON1_INPUT_PIN) == LOW) {
+  if (digitalRead(BUTTON_PIN) == LOW) {
     scan(Wire, display);
-    while (digitalRead(BUTTON1_INPUT_PIN) == LOW) {}
+    while (digitalRead(BUTTON_PIN) == LOW) {}
   }
 }
 
@@ -82,13 +82,13 @@ void loop() {
   }
 
   if (eventManager.getButton(0)->isLongPressed()) {
-    DEBUG_SERIAL_PRINTLN("Button 1 long pressed");
+    // DEBUG_SERIAL_PRINTLN("Button 1 long pressed");
     view.flip();
     needRender = true;
   }
 
   if (eventManager.getButton(0)->isClicked()) {
-    DEBUG_SERIAL_PRINTLN("Button 1 clicked");
+    // DEBUG_SERIAL_PRINTLN("Button 1 clicked");
     view.switchToNextViewMode();
     needRender = true;
   }
