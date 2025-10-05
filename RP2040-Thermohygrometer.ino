@@ -78,6 +78,7 @@ void loop() {
     model.update(sensorData.temperature, sensorData.humidity, sensorData.pressure);
     eventManager.getTimeKeeper(0)->reset();
     needRender = true;
+    DEBUG_SERIAL_PRINTLN("T:" + String(sensorData.temperature / 10.0f, 1) + " H:" + String(sensorData.humidity / 10.0f, 1) + " P:" + String(sensorData.pressure / 10.0f, 1));
   }
 
   if (eventManager.getButton(0)->isLongPressed()) {

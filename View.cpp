@@ -104,7 +104,7 @@ void View::renderPressureChart(Adafruit_SSD1306& display) {
 }
 
 void View::drawChart(Adafruit_SSD1306& display, int16_t x, int16_t y, int16_t w, int16_t h, History& history){
-  DEBUG_SERIAL_PRINTLN("Drawing chart");
+  // DEBUG_SERIAL_PRINTLN("Drawing chart");
   int16_t minValue = history.getMinValue();
   int16_t maxValue = history.getMaxValue();
 
