@@ -9,16 +9,13 @@
 #include "Button.h"
 #include "DebugSerial.h"
 #include "EventManager.h"
-#include "GND.h"
 #include "History.h"
 #include "Model.h"
 #include "SensorManager.h"
 #include "TimeKeeper.h"
 #include "View.h"
 
-#define BUTTON1_GND_PIN 28
-#define BUTTON1_INPUT_PIN 26
-#define BUTTON2_INPUT_PIN 29
+#define BUTTON_PIN 29
 #define SENSOR_READ_INTERVAL_MS 3000
 #define DISPLAY_I2C_ADDRESS 0x3C
 #define DISPLAY_WIDTH 128
@@ -27,23 +24,21 @@
 #define HISTORY_BUFFER_SIZE (DISPLAY_WIDTH / (PLOT_HORIZONTAL_SPACING + 1) + PLOT_HORIZONTAL_SPACING)
 #define PLOT_HORIZONTAL_SPACING 1
 
+Button button(BUTTON_PIN);
+TimeKeeper timeKeeper1(SENSOR_READ_INTERVAL_MS);
+Adafruit_AHTX0 thermometer;
+Adafruit_BMP280 barometer;
+Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+
+EventManager eventManager(button, timeKeeper1);
+SensorManager sensorManager(thermometer, barometer);
+
 int16_t temperatureHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t humidityHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t pressureHistoryBuffer[HISTORY_BUFFER_SIZE];
 History temperatureHistory(temperatureHistoryBuffer, HISTORY_BUFFER_SIZE);
 History humidityHistory(humidityHistoryBuffer, HISTORY_BUFFER_SIZE);
 History pressureHistory(pressureHistoryBuffer, HISTORY_BUFFER_SIZE);
-
-GND gnd1(BUTTON1_GND_PIN);
-Button button1(BUTTON1_INPUT_PIN);
-Button button2(BUTTON2_INPUT_PIN);
-TimeKeeper timeKeeper1(SENSOR_READ_INTERVAL_MS);
-Adafruit_AHTX0 thermometer;
-Adafruit_BMP280 barometer;
-Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
-
-EventManager eventManager(button1, button2, timeKeeper1);
-SensorManager sensorManager(thermometer, barometer);
 
 Model model(temperatureHistory, humidityHistory, pressureHistory);
 View view(model,display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
@@ -55,54 +50,53 @@ void setup() {
   DEBUG_SERIAL_PRINTLN("--");
   DEBUG_SERIAL_PRINTLN("Thermohygrometer");
 
-  gnd1.begin();
-
   eventManager.begin();
   sensorManager.begin();
 
   SensorManager::SensorData sensorData;
-  sensorManager.readSensorData(&sensorData);
+  sensorManager.acquire(&sensorData);
 
   model.begin(sensorData.temperature, sensorData.humidity, sensorData.pressure);
   view.begin(DISPLAY_I2C_ADDRESS);
   delay(1000);
 
-  if (digitalRead(BUTTON2_INPUT_PIN) == LOW) {
+  if (digitalRead(BUTTON_PIN) == LOW) {
     scan(Wire, display);
-    while (digitalRead(BUTTON2_INPUT_PIN) == LOW) {}
+    while (digitalRead(BUTTON_PIN) == LOW) {}
   }
 }
 
 void loop() {
   eventManager.update();
 
-  static bool needUpdate = true;
+  static bool needRender = true;
 
   if (eventManager.getTimeKeeper(0)->isTimeUp()) {
     // DEBUG_SERIAL_PRINTLN("Time to read sensors");
     SensorManager::SensorData sensorData;
-    sensorManager.readSensorData(&sensorData);
+    sensorManager.acquire(&sensorData);
     model.update(sensorData.temperature, sensorData.humidity, sensorData.pressure);
     eventManager.getTimeKeeper(0)->reset();
-    needUpdate = true;
+    needRender = true;
+    DEBUG_SERIAL_PRINTLN("T:" + String(sensorData.temperature / 10.0f, 1) + " H:" + String(sensorData.humidity / 10.0f, 1) + " P:" + String(sensorData.pressure / 10.0f, 1));
+  }
+
+  if (eventManager.getButton(0)->isLongPressed()) {
+    // DEBUG_SERIAL_PRINTLN("Button 1 long pressed");
+    view.flip();
+    needRender = true;
   }
 
   if (eventManager.getButton(0)->isClicked()) {
-    DEBUG_SERIAL_PRINTLN("Button 1 clicked");
-    view.flip();
-    needUpdate = true;
-  }
-
-  if (eventManager.getButton(1)->isClicked()) {
-    DEBUG_SERIAL_PRINTLN("Button 2 clicked");
+    // DEBUG_SERIAL_PRINTLN("Button 1 clicked");
     view.switchToNextViewMode();
-    needUpdate = true;
+    needRender = true;
   }
 
-  if (needUpdate) {
+  if (needRender) {
     // DEBUG_SERIAL_PRINTLN("Time to render views");
     view.render();
-    needUpdate = false;
+    needRender = false;
   }
 
   delay(10);

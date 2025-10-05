@@ -8,7 +8,7 @@ class TimeKeeper;
 
 class EventManager {
 public:
-  EventManager(Button& button1, Button& button2, TimeKeeper& timeKeeper1);
+  EventManager(Button& button1, TimeKeeper& timeKeeper1);
 
   void begin();
   void update();
@@ -18,7 +18,6 @@ public:
 
 private:
   Button& button1;
-  Button& button2;
   TimeKeeper& timeKeeper1;
 };
 
