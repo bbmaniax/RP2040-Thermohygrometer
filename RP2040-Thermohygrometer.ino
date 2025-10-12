@@ -8,7 +8,6 @@
 
 #include "Button.h"
 #include "DebugSerial.h"
-#include "EventManager.h"
 #include "History.h"
 #include "Model.h"
 #include "SensorManager.h"
@@ -25,12 +24,11 @@
 #define PLOT_HORIZONTAL_SPACING 1
 
 Button button(BUTTON_PIN);
-TimeKeeper timeKeeper1(SENSOR_READ_INTERVAL_MS);
+TimeKeeper timeKeeper(SENSOR_READ_INTERVAL_MS);
 Adafruit_AHTX0 thermometer;
 Adafruit_BMP280 barometer;
 Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
-EventManager eventManager(button, timeKeeper1);
 SensorManager sensorManager(thermometer, barometer);
 
 int16_t temperatureHistoryBuffer[HISTORY_BUFFER_SIZE];
@@ -50,10 +48,11 @@ void setup() {
   DEBUG_SERIAL_PRINTLN("--");
   DEBUG_SERIAL_PRINTLN("Thermohygrometer");
 
-  eventManager.begin();
+  button.begin();
+  timeKeeper.begin();
   sensorManager.begin();
 
-  SensorManager::SensorData sensorData;
+  static SensorManager::SensorData sensorData;
   sensorManager.acquire(&sensorData);
 
   model.begin(sensorData.temperature, sensorData.humidity, sensorData.pressure);
@@ -67,27 +66,28 @@ void setup() {
 }
 
 void loop() {
-  eventManager.update();
+  button.update();
+  timeKeeper.update();
 
   static bool needRender = true;
 
-  if (eventManager.getTimeKeeper(0)->isTimeUp()) {
+  if (timeKeeper.isTimeUp()) {
     // DEBUG_SERIAL_PRINTLN("Time to read sensors");
     SensorManager::SensorData sensorData;
     sensorManager.acquire(&sensorData);
     model.update(sensorData.temperature, sensorData.humidity, sensorData.pressure);
-    eventManager.getTimeKeeper(0)->reset();
+    timeKeeper.reset();
     needRender = true;
     DEBUG_SERIAL_PRINTLN("T:" + String(sensorData.temperature / 10.0f, 1) + " H:" + String(sensorData.humidity / 10.0f, 1) + " P:" + String(sensorData.pressure / 10.0f, 1));
   }
 
-  if (eventManager.getButton(0)->isLongPressed()) {
+  if (button.isLongPressed()) {
     // DEBUG_SERIAL_PRINTLN("Button 1 long pressed");
     view.flip();
     needRender = true;
   }
 
-  if (eventManager.getButton(0)->isClicked()) {
+  if (button.isClicked()) {
     // DEBUG_SERIAL_PRINTLN("Button 1 clicked");
     view.switchToNextViewMode();
     needRender = true;
