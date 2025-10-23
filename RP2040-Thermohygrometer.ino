@@ -2,6 +2,7 @@
 
 #include <Adafruit_AHTX0.h>
 #include <Adafruit_BMP280.h>
+#include <Adafruit_NeoPixel.h>
 #include <Adafruit_SSD1306.h>
 #include <Arduino.h>
 #include <Wire.h>
@@ -14,22 +15,25 @@
 #include "TimeKeeper.h"
 #include "View.h"
 
+
+#define RGBLED_PIN 16
 #define BUTTON_PIN 29
-#define SENSOR_READ_INTERVAL_MS 3000
 #define DISPLAY_I2C_ADDRESS 0x3C
 #define DISPLAY_WIDTH 128
 #define DISPLAY_HEIGHT 64
 
+#define SENSOR_READ_INTERVAL_MS 3000
+
 #define HISTORY_BUFFER_SIZE (DISPLAY_WIDTH / (PLOT_HORIZONTAL_SPACING + 1) + PLOT_HORIZONTAL_SPACING)
 #define PLOT_HORIZONTAL_SPACING 1
 
+Adafruit_NeoPixel led(1, RGBLED_PIN, NEO_GRB + NEO_KHZ800);
 Button button(BUTTON_PIN);
-TimeKeeper timeKeeper(SENSOR_READ_INTERVAL_MS);
 Adafruit_AHTX0 thermometer;
 Adafruit_BMP280 barometer;
-Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
-
 SensorManager sensorManager(thermometer, barometer);
+Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+TimeKeeper timeKeeper(SENSOR_READ_INTERVAL_MS);
 
 int16_t temperatureHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t humidityHistoryBuffer[HISTORY_BUFFER_SIZE];
@@ -48,6 +52,7 @@ void setup() {
   DEBUG_SERIAL_PRINTLN("--");
   DEBUG_SERIAL_PRINTLN("Thermohygrometer");
 
+  led.begin();
   button.begin();
   timeKeeper.begin();
   sensorManager.begin();
@@ -57,6 +62,17 @@ void setup() {
 
   model.begin(sensorData.temperature, sensorData.humidity, sensorData.pressure);
   view.begin(DISPLAY_I2C_ADDRESS);
+
+  led.setBrightness(127);
+  for (int i = 0; i < 3; i++) {
+    led.setPixelColor(0, 160, 160, 160);
+    led.show();
+    delay(200);
+    led.setPixelColor(0, 0, 0, 0);
+    led.show();
+    delay(200);
+  }
+
   delay(1000);
 
   if (digitalRead(BUTTON_PIN) == LOW) {
