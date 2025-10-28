@@ -57,6 +57,6 @@ lib/install:
 .PHONY: deploy
 deploy: deploy/rpipico
 
-.PHONE: deploy/rpipico
+.PHONY: deploy/rpipico
 deploy/rpipico:
 	$(call deploy-sketch,rp2040:rp2040:rpipico,$(SKETCH))
