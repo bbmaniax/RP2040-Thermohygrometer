@@ -52,11 +52,11 @@ void setup() {
   blink(160, 160, 160, 200);
   blink(160, 160, 160, 200);
 
-  DEBUG_SERIAL_BEGIN(9600);
-  DEBUG_SERIAL_WAIT_FOR();
-  DEBUG_SERIAL_PRINTLN();
-  DEBUG_SERIAL_PRINTLN("--");
-  DEBUG_SERIAL_PRINTLN("Thermohygrometer");
+  Serial.begin(9600);
+  while (!Serial && millis() < 1000) {}
+  Serial.println();
+  Serial.println("--");
+  Serial.println("Thermohygrometer (build " + timestamp() + ")");
 
   button.begin();
   sensorManager.begin();
@@ -81,7 +81,6 @@ void loop() {
 
   if (timeKeeper.isTimeUp()) {
     // DEBUG_SERIAL_PRINTLN("Time to read sensors");
-    SensorManager::SensorData sensorData;
     sensorManager.acquire(&sensorData);
     model.update(sensorData.temperature, sensorData.humidity, sensorData.pressure);
     timeKeeper.reset();
@@ -101,7 +100,7 @@ void loop() {
   }
 
   if (needRender) {
-    DEBUG_SERIAL_PRINTLN("T:" + String(sensorData.temperature / 10.0f, 1) + " H:" + String(sensorData.humidity / 10.0f, 1) + " P:" + String(sensorData.pressure / 10.0f, 1));
+    Serial.println("T:" + String(sensorData.temperature / 10.0f, 1) + " H:" + String(sensorData.humidity / 10.0f, 1) + " P:" + String(sensorData.pressure / 10.0f, 1));
     view.render();
     needRender = false;
   }
@@ -116,6 +115,19 @@ void blink(uint8_t r, uint8_t g, uint8_t b, unsigned long durationMs) {
   rgbled.setPixelColor(0, 0, 0, 0);
   rgbled.show();
   delay(durationMs);
+}
+
+String timestamp() {
+  const char* m = "JanFebMarAprMayJunJulAugSepOctNovDec";
+  char mon[4];
+  int d, y, hh, mm, ss;
+  sscanf(__DATE__, "%3s %d %d", mon, &d, &y);
+  sscanf(__TIME__, "%d:%d:%d", &hh, &mm, &ss);
+  int mo = (strstr(m, mon) - m) / 3 + 1;
+
+  char buf[15];
+  sprintf(buf, "%04d%02d%02d.%02d%02d%02d", y, mo, d, hh, mm, ss);
+  return String(buf);
 }
 
 void scan(TwoWire& wire, Adafruit_SSD1306& display) {
