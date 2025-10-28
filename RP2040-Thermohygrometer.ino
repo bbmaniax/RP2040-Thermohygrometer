@@ -26,14 +26,6 @@
 #define HISTORY_BUFFER_SIZE (DISPLAY_WIDTH / (PLOT_HORIZONTAL_SPACING + 1) + PLOT_HORIZONTAL_SPACING)
 #define PLOT_HORIZONTAL_SPACING 1
 
-Button button(BUTTON_PIN);
-Adafruit_NeoPixel rgbled(1, RGBLED_PIN, NEO_GRB + NEO_KHZ800);
-Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
-Adafruit_AHTX0 thermometer;
-Adafruit_BMP280 barometer;
-SensorManager sensorManager(thermometer, barometer);
-TimeKeeper timeKeeper(SENSOR_READ_INTERVAL_MS);
-
 SensorManager::SensorData sensorData;
 int16_t temperatureHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t humidityHistoryBuffer[HISTORY_BUFFER_SIZE];
@@ -41,6 +33,14 @@ int16_t pressureHistoryBuffer[HISTORY_BUFFER_SIZE];
 History temperatureHistory(temperatureHistoryBuffer, HISTORY_BUFFER_SIZE);
 History humidityHistory(humidityHistoryBuffer, HISTORY_BUFFER_SIZE);
 History pressureHistory(pressureHistoryBuffer, HISTORY_BUFFER_SIZE);
+
+Adafruit_NeoPixel rgbled(1, RGBLED_PIN, NEO_GRB + NEO_KHZ800);
+Button button(BUTTON_PIN);
+Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
+Adafruit_AHTX0 thermometer;
+Adafruit_BMP280 barometer;
+SensorManager sensorManager(thermometer, barometer);
+TimeKeeper timeKeeper(SENSOR_READ_INTERVAL_MS);
 
 Model model(temperatureHistory, humidityHistory, pressureHistory);
 View view(model,display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
@@ -125,7 +125,7 @@ String timestamp() {
   sscanf(__TIME__, "%d:%d:%d", &hh, &mm, &ss);
   int mo = (strstr(m, mon) - m) / 3 + 1;
 
-  char buf[15];
+  char buf[16];
   sprintf(buf, "%04d%02d%02d.%02d%02d%02d", y, mo, d, hh, mm, ss);
   return String(buf);
 }
