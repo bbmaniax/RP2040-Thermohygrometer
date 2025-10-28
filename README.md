@@ -25,36 +25,11 @@
 | OLED モジュール | 0.96" 128x64 SSD1306 | 1個 |
 | 温湿度・気圧センサーモジュール | AHT20+BMP280 | 1個 |
 
-## 接続
-
-### OLED ディスプレイ
-
-| OLED モジュール | RP2040-Zero |
-|:---|:---|
-| VCC | 3.3V |
-| GND | GND |
-| SDA | GPIO 4 (SDA) |
-| SCL | GPIO 5 (SCL) |
-
-### タクトスイッチ
-
-| タクトスイッチ | RP2040-Zero |
-|:--------|:------------------|
-| タクトスイッチ PIN 1 | GPIO 29 |
-| タクトスイッチ PIN 2 | GND |
-
-### 温湿度・気圧センサーモジュール
-
-| 温湿度・気圧センサーモジュール | RP2040-Zero |
-|:---|:---|
-| VCC | 3.3V |
-| SDA | GPIO 4 (SDA) |
-| GND | GND |
-| SCL | GPIO 5 (SCL) |
-
 ## 配線図
 
 <img src="./images/wiring.jpg" alt="配線図" style="border: 1px solid #ccc;" />
+
+## プログラム開発環境
 
 ### 統合開発環境
 
@@ -78,6 +53,7 @@
 |:-----------|:-----|
 | Adafruit AHTX0 | AHT20温湿度センサー制御 |
 | Adafruit BMP280 Library | BMP280気圧センサー制御 |
+| Adafruit NeoPixel | NeoPixel LED制御 |
 | Adafruit SSD1306 | SSD1306 OLEDディスプレイ制御 |
 
 **インストール**: Arduino IDEのライブラリマネージャーで検索・インストール
