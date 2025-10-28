@@ -4,10 +4,10 @@
 
 #include "Button.h"
 
-Button::Button(uint8_t pin, unsigned long debounceDelay, unsigned long longPressDelay) : pin(pin), debounceDelay(debounceDelay), longPressDelay(longPressDelay), currentState(false), lastState(false), lastReading(false), lastDebounceTime(0), pressStartTime(0), longPressTriggered(false) {}
+Button::Button(uint8_t pin, bool usePullUp, unsigned long debounceDelay, unsigned long longPressDelay) : pin(pin), usePullUp(usePullUp), debounceDelay(debounceDelay), longPressDelay(longPressDelay), currentState(false), lastState(false), lastReading(false), lastDebounceTime(0), pressStartTime(0), longPressTriggered(false) {}
 
 void Button::begin() {
-  pinMode(pin, INPUT_PULLUP);
+  pinMode(pin, usePullUp ? INPUT_PULLUP : INPUT);
   currentState = false;
   lastState = currentState;
   lastReading = currentState;

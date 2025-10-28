@@ -7,7 +7,7 @@
 
 class Button {
 public:
-  Button(uint8_t pin, unsigned long debounceDelay = 20, unsigned long longPressDelay = 1000);
+  Button(uint8_t pin, bool usePullUp = true, unsigned long debounceDelay = 20, unsigned long longPressDelay = 1000);
 
   void begin();
   void update();
@@ -18,6 +18,7 @@ public:
 
 private:
   uint8_t pin;
+  bool usePullUp;
   unsigned long debounceDelay;
   unsigned long longPressDelay;
 
