@@ -1,6 +1,15 @@
 board_manager:
   additional_urls:
+    - https://adafruit.github.io/arduino-board-index/package_adafruit_index.json
+    - https://drazzy.com/package_drazzy.com_index.json
     - https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+    - https://mcudude.github.io/MicroCore/package_MCUdude_MicroCore_index.json
+    - https://mcudude.github.io/MiniCore/package_MCUdude_MiniCore_index.json
+    - https://raw.githubusercontent.com/dbuezas/lgt8fx/master/package_lgt8fx_index.json
+    - https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+    - https://raw.githubusercontent.com/renesas/Arduino/master/hardware/package_index_rl78g15_fpb_p20_bundled.json
+    - https://raw.githubusercontent.com/sparkfun/Arduino_Boards/master/IDE_Board_Manager/package_sparkfun_index.json
+    - https://static-cdn.m5stack.com/resource/arduino/package_m5stack_index.json
 
 library:
   enable_unsafe_install: false

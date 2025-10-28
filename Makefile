@@ -1,6 +1,5 @@
 SKETCH ?= RP2040-Thermohygrometer.ino
-FQBN ?= rp2040:rp2040:rpipico
-CORES ?= rp2040:rp2040
+CORES ?= arduino:avr rp2040:rp2040
 LIBS ?= "Adafruit AHTX0" "Adafruit BMP280 Library" "Adafruit SSD1306" "Adafruit NeoPixel"
 
 BUILD_CONFIG ?= ./arduino-cli.yaml
@@ -10,6 +9,20 @@ DEPLOY_CMD ?= /mnt/c/Windows/System32/robocopy.exe
 DEPLOY_DIR ?= D:/
 
 TEMP_DIR ?= ./tmp
+
+define build-sketch
+	arduino-cli compile \
+		--library ./src \
+		--fqbn $(1) \
+		--export-binaries \
+		$(if $(filter-out undefined,$(origin DEBUG)),--build-property "build.extra_flags=-DDEBUG") \
+		./$(2);
+endef
+
+define deploy-sketch
+	$(DEPLOY_CMD) \
+		"$(subst /,\,$(BUILD_DIR)/$(subst :,.,$(1)))" "$(DEPLOY_DIR)" $(2).uf2
+endef
 
 .PHONY: all
 all: clean install build
@@ -24,7 +37,7 @@ build: build/rpipico
 
 .PHONY: build/rpipico
 build/rpipico:
-	arduino-cli --config-file $(BUILD_CONFIG) compile --fqbn $(FQBN) --export-binaries $(if $(filter-out undefined,$(origin DEBUG)),--build-property "build.extra_flags=-DDEBUG") $(SKETCH)
+	$(call build-sketch,rp2040:rp2040:rpipico,$(SKETCH))
 
 .PHONY: install
 install: core/install lib/install
@@ -42,5 +55,8 @@ lib/install:
 	arduino-cli --config-file $(BUILD_CONFIG) lib install $(LIBS)
 
 .PHONY: deploy
-deploy:
-	-$(DEPLOY_CMD) "$(subst /,\,$(BUILD_DIR)/$(subst :,.,$(FQBN)))" "$(DEPLOY_DIR)" *.uf2
+deploy: deploy/rpipico
+
+.PHONE: deploy/rpipico
+deploy/rpipico:
+	$(call deploy-sketch,rp2040:rp2040:rpipico,$(SKETCH))
