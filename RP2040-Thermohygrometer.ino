@@ -63,7 +63,6 @@ void setup() {
   timeKeeper.begin();
   model.begin(sensorData.temperature, sensorData.humidity, sensorData.pressure);
   view.begin(DISPLAY_I2C_ADDRESS);
-
   sensorManager.acquire(&sensorData);
   delay(1000);
 
