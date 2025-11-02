@@ -6,9 +6,7 @@
 
 TimeKeeper::TimeKeeper(unsigned long intervalMs) : intervalMs(intervalMs), lastMillis(0), timeUp(false) {}
 
-void TimeKeeper::begin() {
-  reset();
-}
+void TimeKeeper::begin() {}
 
 void TimeKeeper::update() {
   unsigned long currentMillis = millis();
@@ -17,7 +15,7 @@ void TimeKeeper::update() {
   }
 }
 
-void TimeKeeper::reset() {
+void TimeKeeper::restart() {
   lastMillis = millis();
   timeUp = false;
 }

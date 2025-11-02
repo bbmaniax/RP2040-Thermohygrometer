@@ -15,19 +15,23 @@ void SensorManager::begin() {
   if (!barometer.begin()) { DEBUG_SERIAL_PRINTLN("Failed to initialize BMP280!"); }
 }
 
-void SensorManager::acquire(SensorData* values) {
+void SensorManager::acquire() {
   // DEBUG_SERIAL_PRINTLN("Reading sensor data");
   sensors_event_t temperatureEvent, humidityEvent;
   if (thermometer.getEvent(&humidityEvent, &temperatureEvent)) {
-    values->temperature = static_cast<int16_t>(temperatureEvent.temperature * 10.0f);
-    values->humidity = static_cast<int16_t>(humidityEvent.relative_humidity * 10.0f);
+    data.temperature = static_cast<int16_t>(temperatureEvent.temperature * 10.0f);
+    data.humidity = static_cast<int16_t>(humidityEvent.relative_humidity * 10.0f);
   } else {
     DEBUG_SERIAL_PRINTLN("Failed to read AHTX0!");
   }
   float pressure = barometer.readPressure();
   if (!isnan(pressure)) {
-    values->pressure = static_cast<int16_t>(pressure / 10.0f);
+    data.pressure = static_cast<int16_t>(pressure / 10.0f);
   } else {
     DEBUG_SERIAL_PRINTLN("Failed to read BMP280!");
   }
+}
+
+SensorManager::SensorData& SensorManager::getData() {
+  return data;
 }
