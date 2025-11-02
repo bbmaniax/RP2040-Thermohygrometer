@@ -26,7 +26,6 @@
 #define HISTORY_BUFFER_SIZE (DISPLAY_WIDTH / (PLOT_HORIZONTAL_SPACING + 1) + PLOT_HORIZONTAL_SPACING)
 #define PLOT_HORIZONTAL_SPACING 1
 
-SensorManager::SensorData sensorData;
 int16_t temperatureHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t humidityHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t pressureHistoryBuffer[HISTORY_BUFFER_SIZE];
@@ -59,12 +58,13 @@ void setup() {
   Serial.println("Thermohygrometer (build " + timestamp() + ")");
 
   button.begin();
-  sensorManager.begin();
   timeKeeper.begin();
-  model.begin(sensorData.temperature, sensorData.humidity, sensorData.pressure);
-  view.begin(DISPLAY_I2C_ADDRESS);
+  sensorManager.begin();
+  delay(100);
 
-  sensorManager.acquire(&sensorData);
+  sensorManager.acquire();
+  model.begin(sensorManager.getData().temperature, sensorManager.getData().humidity, sensorManager.getData().pressure);
+  view.begin(DISPLAY_I2C_ADDRESS);
   delay(1000);
 
   if (digitalRead(BUTTON_PIN) == LOW) {
@@ -81,9 +81,9 @@ void loop() {
 
   if (timeKeeper.isTimeUp()) {
     // DEBUG_SERIAL_PRINTLN("Time to read sensors");
-    sensorManager.acquire(&sensorData);
-    model.update(sensorData.temperature, sensorData.humidity, sensorData.pressure);
-    timeKeeper.reset();
+    sensorManager.acquire();
+    model.update(sensorManager.getData().temperature, sensorManager.getData().humidity, sensorManager.getData().pressure);
+    timeKeeper.restart();
     needRender = true;
   }
 
@@ -100,7 +100,7 @@ void loop() {
   }
 
   if (needRender) {
-    Serial.println("T:" + String(sensorData.temperature / 10.0f, 1) + " H:" + String(sensorData.humidity / 10.0f, 1) + " P:" + String(sensorData.pressure / 10.0f, 1));
+    Serial.println("T:" + String(sensorManager.getData().temperature / 10.0f, 1) + " H:" + String(sensorManager.getData().humidity / 10.0f, 1) + " P:" + String(sensorManager.getData().pressure / 10.0f, 1));
     view.render();
     needRender = false;
   }

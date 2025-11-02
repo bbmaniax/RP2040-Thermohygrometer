@@ -19,9 +19,12 @@ public:
   };
 
   void begin();
-  void acquire(SensorData* values);
+  void acquire();
+  SensorData& getData();
 
 private:
+  SensorData data;
+
   Adafruit_AHTX0& thermometer;
   Adafruit_BMP280& barometer;
 };
