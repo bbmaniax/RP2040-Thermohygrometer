@@ -16,15 +16,16 @@
 #include "View.h"
 
 #define RGBLED_PIN 16
+#define RGBLED_BRIGHTNESS 127
+#define SERIAL_SPEED 115200
 #define BUTTON_PIN 29
 #define DISPLAY_I2C_ADDRESS 0x3C
 #define DISPLAY_WIDTH 128
 #define DISPLAY_HEIGHT 64
 
-#define SENSOR_READ_INTERVAL_MS 3000
-
-#define HISTORY_BUFFER_SIZE (DISPLAY_WIDTH / (PLOT_HORIZONTAL_SPACING + 1) + PLOT_HORIZONTAL_SPACING)
 #define PLOT_HORIZONTAL_SPACING 1
+#define HISTORY_BUFFER_SIZE (DISPLAY_WIDTH / (PLOT_HORIZONTAL_SPACING + 1) + PLOT_HORIZONTAL_SPACING)
+#define SENSOR_READ_INTERVAL_MS 3000
 
 int16_t temperatureHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t humidityHistoryBuffer[HISTORY_BUFFER_SIZE];
@@ -42,30 +43,29 @@ SensorManager sensorManager(thermometer, barometer);
 TimeKeeper timeKeeper(SENSOR_READ_INTERVAL_MS);
 
 Model model(temperatureHistory, humidityHistory, pressureHistory);
-View view(model,display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+View view(model, display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
 void setup() {
   rgbled.begin();
-  rgbled.setBrightness(127);
+  rgbled.setBrightness(RGBLED_BRIGHTNESS);
   blink(160, 160, 160, 200);
   blink(160, 160, 160, 200);
   blink(160, 160, 160, 200);
 
-  Serial.begin(9600);
+  Serial.begin(SERIAL_SPEED);
   while (!Serial && millis() < 1000) {}
   Serial.println();
   Serial.println("--");
   Serial.println("Thermohygrometer (build " + timestamp() + ")");
 
   button.begin();
-  timeKeeper.begin();
   sensorManager.begin();
+  timeKeeper.begin();
   delay(100);
 
   sensorManager.acquire();
   model.begin(sensorManager.getData().temperature, sensorManager.getData().humidity, sensorManager.getData().pressure);
   view.begin(DISPLAY_I2C_ADDRESS);
-  delay(1000);
 
   if (digitalRead(BUTTON_PIN) == LOW) {
     scan(Wire, display);
@@ -83,7 +83,7 @@ void loop() {
     // DEBUG_SERIAL_PRINTLN("Time to read sensors");
     sensorManager.acquire();
     model.update(sensorManager.getData().temperature, sensorManager.getData().humidity, sensorManager.getData().pressure);
-    timeKeeper.restart();
+    timeKeeper.reset();
     needRender = true;
   }
 
@@ -100,7 +100,11 @@ void loop() {
   }
 
   if (needRender) {
-    Serial.println("T:" + String(sensorManager.getData().temperature / 10.0f, 1) + " H:" + String(sensorManager.getData().humidity / 10.0f, 1) + " P:" + String(sensorManager.getData().pressure / 10.0f, 1));
+    String line = "TS:" + String(millis())  //
+      + " T:" + String(sensorManager.getData().temperature / 10.0f, 1)  //
+      + " H:" + String(sensorManager.getData().humidity / 10.0f, 1)  //
+      + " P:" + String(sensorManager.getData().pressure / 10.0f, 1);  //
+    Serial.println(line);
     view.render();
     needRender = false;
   }
@@ -131,7 +135,7 @@ String timestamp() {
 }
 
 void scan(TwoWire& wire, Adafruit_SSD1306& display) {
-  DEBUG_SERIAL_PRINTLN("SCANNING");
+  Serial.println("SCANNING");
   display.clearDisplay();
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
@@ -145,9 +149,7 @@ void scan(TwoWire& wire, Adafruit_SSD1306& display) {
     wire.beginTransmission(address);
     uint8_t error = wire.endTransmission();
     if (error == 0) {
-      if (address < 16) DEBUG_SERIAL_PRINT("0");
-      DEBUG_SERIAL_PRINTHEX(address);
-      DEBUG_SERIAL_PRINT(" ");
+      Serial.println(address, HEX);
       if (deviceCount == 0) {
         display.clearDisplay();
         display.setCursor(0, 0);
@@ -160,7 +162,7 @@ void scan(TwoWire& wire, Adafruit_SSD1306& display) {
   }
 
   if (deviceCount == 0) {
-    DEBUG_SERIAL_PRINTLN("NO DEVICES");
+    Serial.println("NO DEVICES");
     display.clearDisplay();
     display.setCursor(0, 0);
     display.print("NO DEVICES");
