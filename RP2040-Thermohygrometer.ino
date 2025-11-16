@@ -135,7 +135,7 @@ String timestamp() {
 }
 
 void scan(TwoWire& wire, Adafruit_SSD1306& display) {
-  DEBUG_SERIAL_PRINTLN("SCANNING");
+  Serial.println("SCANNING");
   display.clearDisplay();
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
@@ -149,9 +149,7 @@ void scan(TwoWire& wire, Adafruit_SSD1306& display) {
     wire.beginTransmission(address);
     uint8_t error = wire.endTransmission();
     if (error == 0) {
-      if (address < 16) DEBUG_SERIAL_PRINT("0");
-      DEBUG_SERIAL_PRINTHEX(address);
-      DEBUG_SERIAL_PRINT(" ");
+      Serial.println(address, HEX);
       if (deviceCount == 0) {
         display.clearDisplay();
         display.setCursor(0, 0);
@@ -164,7 +162,7 @@ void scan(TwoWire& wire, Adafruit_SSD1306& display) {
   }
 
   if (deviceCount == 0) {
-    DEBUG_SERIAL_PRINTLN("NO DEVICES");
+    Serial.println("NO DEVICES");
     display.clearDisplay();
     display.setCursor(0, 0);
     display.print("NO DEVICES");
