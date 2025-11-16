@@ -1,5 +1,5 @@
 SKETCH ?= RP2040-Thermohygrometer.ino
-CORES ?= arduino:avr rp2040:rp2040
+CORES ?= rp2040:rp2040
 LIBS ?= "Adafruit AHTX0" "Adafruit BMP280 Library" "Adafruit SSD1306" "Adafruit NeoPixel"
 
 BUILD_CONFIG ?= ./arduino-cli.yaml
@@ -35,9 +35,8 @@ clean:
 .PHONY: build
 build: build/rpipico
 
-.PHONY: build/rpipico
-build/rpipico:
-	$(call build-sketch,rp2040:rp2040:rpipico,$(SKETCH))
+.PHONY: deploy
+deploy: deploy/rpipico
 
 .PHONY: install
 install: core/install lib/install
@@ -54,8 +53,9 @@ lib/install:
 	arduino-cli --config-file $(BUILD_CONFIG) lib update-index
 	arduino-cli --config-file $(BUILD_CONFIG) lib install $(LIBS)
 
-.PHONY: deploy
-deploy: deploy/rpipico
+.PHONY: build/rpipico
+build/rpipico:
+	$(call build-sketch,rp2040:rp2040:rpipico,$(SKETCH))
 
 .PHONY: deploy/rpipico
 deploy/rpipico:
