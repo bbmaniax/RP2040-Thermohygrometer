@@ -15,7 +15,7 @@ void TimeKeeper::update() {
   }
 }
 
-void TimeKeeper::restart() {
+void TimeKeeper::reset() {
   lastMillis = millis();
   timeUp = false;
 }

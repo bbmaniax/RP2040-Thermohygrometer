@@ -11,7 +11,7 @@ public:
 
   void begin();
   void update();
-  void restart();
+  void reset();
 
   bool isTimeUp() const;
 
