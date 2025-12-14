@@ -4,6 +4,8 @@ board_manager:
     - https://arduino.esp8266.com/stable/package_esp8266com_index.json
     - https://drazzy.com/package_drazzy.com_index.json
     - https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+    - https://github.com/openwch/board_manager_files/raw/main/package_ch32v_index.json
+    - https://github.com/YuukiUmeta-UIAP/board_manager_files/raw/main/package_uiap.jp_index.json
     - https://mcudude.github.io/MicroCore/package_MCUdude_MicroCore_index.json
     - https://mcudude.github.io/MiniCore/package_MCUdude_MiniCore_index.json
     - https://raw.githubusercontent.com/ch32-riscv-ug/arduino_core_ch32_riscv_arduino/main/package_ch32-riscv-arduino.json
