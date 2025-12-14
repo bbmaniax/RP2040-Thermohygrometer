@@ -45,7 +45,12 @@
 |:------|:-----|
 | Raspberry Pi Pico/RP2040/RP2350 | ボードサポートパッケージ |
 
-**インストール**: Arduino IDE のボードマネージャーで検索・インストール
+**インストール**:
+1. Arduino IDE の「ファイル」→「環境設定」→「追加のボードマネージャのURL」に以下を追加:
+   ```
+   https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+   ```
+2. ボードマネージャーで「Pico」または「RP2040」を検索・インストール
 
 ### 依存ライブラリ
 
