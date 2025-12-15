@@ -1,14 +1,13 @@
 // RP2040-Thermohygrometer
 
-#include <Arduino.h>
-
 #include <Adafruit_AHTX0.h>
 #include <Adafruit_BMP280.h>
 #include <Adafruit_NeoPixel.h>
 #include <Adafruit_SSD1306.h>
+#include <Arduino.h>
 
-#include "Button.h"
 #include "DebugSerial.h"
+#include "DigitalButton.h"
 #include "History.h"
 #include "Model.h"
 #include "SensorManager.h"
@@ -30,20 +29,20 @@
 int16_t temperatureHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t humidityHistoryBuffer[HISTORY_BUFFER_SIZE];
 int16_t pressureHistoryBuffer[HISTORY_BUFFER_SIZE];
-History temperatureHistory(temperatureHistoryBuffer, HISTORY_BUFFER_SIZE);
-History humidityHistory(humidityHistoryBuffer, HISTORY_BUFFER_SIZE);
-History pressureHistory(pressureHistoryBuffer, HISTORY_BUFFER_SIZE);
 
+DigitalButton button(BUTTON_PIN, true);
 Adafruit_NeoPixel rgbled(1, RGBLED_PIN, NEO_GRB + NEO_KHZ800);
-Button button(BUTTON_PIN);
 Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 Adafruit_AHTX0 thermometer;
 Adafruit_BMP280 barometer;
-SensorManager sensorManager(thermometer, barometer);
-TimeKeeper timeKeeper(SENSOR_READ_INTERVAL_MS);
 
+History temperatureHistory(temperatureHistoryBuffer, HISTORY_BUFFER_SIZE);
+History humidityHistory(humidityHistoryBuffer, HISTORY_BUFFER_SIZE);
+History pressureHistory(pressureHistoryBuffer, HISTORY_BUFFER_SIZE);
 Model model(temperatureHistory, humidityHistory, pressureHistory);
 View view(model, display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+SensorManager sensorManager(thermometer, barometer);
+TimeKeeper timeKeeper(SENSOR_READ_INTERVAL_MS);
 
 void setup() {
   rgbled.begin();
