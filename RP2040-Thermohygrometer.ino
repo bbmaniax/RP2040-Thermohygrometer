@@ -11,7 +11,6 @@
 #include "History.h"
 #include "Model.h"
 #include "SensorManager.h"
-#include "TimeKeeper.h"
 #include "View.h"
 
 #define RGBLED_PIN 16
@@ -41,8 +40,7 @@ History humidityHistory(humidityHistoryBuffer, HISTORY_BUFFER_SIZE);
 History pressureHistory(pressureHistoryBuffer, HISTORY_BUFFER_SIZE);
 Model model(temperatureHistory, humidityHistory, pressureHistory);
 View view(model, display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-SensorManager sensorManager(thermometer, barometer);
-TimeKeeper timeKeeper(SENSOR_READ_INTERVAL_MS);
+SensorManager sensorManager(thermometer, barometer, SENSOR_READ_INTERVAL_MS);
 
 void setup() {
   rgbled.begin();
@@ -59,11 +57,9 @@ void setup() {
 
   button.begin();
   sensorManager.begin();
-  timeKeeper.begin();
   delay(100);
 
-  sensorManager.acquire();
-  model.begin(sensorManager.getData().temperature, sensorManager.getData().humidity, sensorManager.getData().pressure);
+  model.begin(0, 0, 0);
   view.begin(DISPLAY_I2C_ADDRESS);
 
   if (digitalRead(BUTTON_PIN) == LOW) {
@@ -73,18 +69,10 @@ void setup() {
 }
 
 void loop() {
-  button.update();
-  timeKeeper.update();
-
   static bool needRender = true;
 
-  if (timeKeeper.isTimeUp()) {
-    // DEBUG_SERIAL_PRINTLN("Time to read sensors");
-    sensorManager.acquire();
-    model.update(sensorManager.getData().temperature, sensorManager.getData().humidity, sensorManager.getData().pressure);
-    timeKeeper.reset();
-    needRender = true;
-  }
+  button.update();
+  sensorManager.update();
 
   if (button.isLongPressed()) {
     // DEBUG_SERIAL_PRINTLN("Button 1 long pressed");
@@ -98,11 +86,18 @@ void loop() {
     needRender = true;
   }
 
+  if (sensorManager.isReady()) {
+    // DEBUG_SERIAL_PRINTLN("Time to read sensors");
+    SensorManager::SensorData data = sensorManager.getSensorData();
+    model.update(data.temperature, data.humidity, data.pressure);
+    needRender = true;
+  }
+
   if (needRender) {
     String line = "TS:" + String(millis())  //
-      + " T:" + String(sensorManager.getData().temperature / 10.0f, 1)  //
-      + " H:" + String(sensorManager.getData().humidity / 10.0f, 1)  //
-      + " P:" + String(sensorManager.getData().pressure / 10.0f, 1);  //
+      + " T:" + String(model.getLatestTemperature() / 10.0f, 1)  //
+      + " H:" + String(model.getLatestHumidity() / 10.0f, 1)  //
+      + " P:" + String(model.getLatestPressure() / 10.0f, 1);  //
     Serial.println(line);
     view.render();
     needRender = false;

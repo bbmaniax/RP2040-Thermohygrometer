@@ -10,23 +10,29 @@ class Adafruit_BMP280;
 
 class SensorManager {
 public:
-  SensorManager(Adafruit_AHTX0& thermometer, Adafruit_BMP280& barometer);
-
   struct SensorData {
     int16_t temperature;
     int16_t humidity;
     int16_t pressure;
   };
 
+  SensorManager(Adafruit_AHTX0& thermometer, Adafruit_BMP280& barometer, unsigned long intervalMs = 3000);
+
   void begin();
-  void acquire();
-  SensorData& getData();
+  void update();
+  bool isReady() const;
+  SensorData getSensorData();
 
 private:
-  SensorData data;
+  enum State { IDLE, READING };
 
   Adafruit_AHTX0& thermometer;
   Adafruit_BMP280& barometer;
+  State state;
+  unsigned long lastReadTime;
+  unsigned long interval;
+  SensorData lastData;
+  bool resultReady;
 };
 
 #endif  // __SENSOR_MANAGER_H__
