@@ -20,6 +20,15 @@ class View {
     int16_t h;
   };
 
+  enum ViewMode {
+    VIEW_MODE_ALL_CHARTS = 0,
+    VIEW_MODE_TEMPERATURE_CHART,
+    VIEW_MODE_HUMIDITY_CHART,
+    VIEW_MODE_PRESSURE_CHART,
+    VIEW_MODE_ALL_TEXT,
+    VIEW_MODE_COUNT
+  };
+
   enum HorizontalAlign {
     HALIGN_LEFT,
     HALIGN_CENTER,
@@ -46,21 +55,11 @@ class View {
   void render();
 
  private:
-  typedef enum {
-    VIEW_MODE_ALL_CHARTS = 0,
-    VIEW_MODE_TEMPERATURE_CHART,
-    VIEW_MODE_HUMIDITY_CHART,
-    VIEW_MODE_PRESSURE_CHART,
-    VIEW_MODE_ALL_TEXT,
-    VIEW_MODE_COUNT
-  } ViewMode;
-
   void renderAllCharts(Adafruit_SSD1306& display);
   void renderTemperatureChart(Adafruit_SSD1306& display);
   void renderHumidityChart(Adafruit_SSD1306& display);
   void renderPressureChart(Adafruit_SSD1306& display);
   void renderAllText(Adafruit_SSD1306& display);
-
   void drawSensorData(int16_t value, const char* unit, const Rect& rect, TextSize textSize, HorizontalAlign hAlign, VerticalAlign vAlign, bool withBackground);
   void drawSensorDataHistory(SensorDataHistory& history, const Rect& rect);
 

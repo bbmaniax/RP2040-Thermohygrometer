@@ -22,26 +22,26 @@ void Model::update(int16_t temperature, int16_t humidity, int16_t pressure) {
   pressureHistory.prepend(pressure);
 }
 
-SensorDataHistory& Model::getTemperatureHistory() {
-  return temperatureHistory;
-}
-
-SensorDataHistory& Model::getHumidityHistory() {
-  return humidityHistory;
-}
-
-SensorDataHistory& Model::getPressureHistory() {
-  return pressureHistory;
-}
-
-int16_t Model::getLatestTemperature() {
+int16_t Model::getLatestTemperature() const {
   return temperatureHistory.getValue(0);
 }
 
-int16_t Model::getLatestHumidity() {
+int16_t Model::getLatestHumidity() const {
   return humidityHistory.getValue(0);
 }
 
-int16_t Model::getLatestPressure() {
+int16_t Model::getLatestPressure() const {
   return pressureHistory.getValue(0);
+}
+
+SensorDataHistory& Model::getTemperatureHistory() const {
+  return temperatureHistory;
+}
+
+SensorDataHistory& Model::getHumidityHistory() const {
+  return humidityHistory;
+}
+
+SensorDataHistory& Model::getPressureHistory() const {
+  return pressureHistory;
 }

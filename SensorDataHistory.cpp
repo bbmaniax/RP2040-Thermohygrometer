@@ -6,10 +6,6 @@
 
 SensorDataHistory::SensorDataHistory(int16_t* buffer, size_t size) : buffer(buffer), size(size), count(0) {}
 
-size_t SensorDataHistory::getCount() const {
-  return count;
-}
-
 void SensorDataHistory::begin() {
   count = 0;
 }
@@ -20,6 +16,10 @@ void SensorDataHistory::prepend(int16_t value) {
   }
   buffer[0] = value;
   if (count < size) count++;
+}
+
+size_t SensorDataHistory::getCount() const {
+  return count;
 }
 
 int16_t SensorDataHistory::getValue(size_t index) const {

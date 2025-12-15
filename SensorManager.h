@@ -7,11 +7,14 @@
 
 #include <Arduino.h>
 
+#  define INVALID_SENSOR_VALUE INT16_MIN
+#  define IS_VALID_SENSOR_VALUE(value) ((value) != INVALID_SENSOR_VALUE)
+
 class Adafruit_AHTX0;
 class Adafruit_BMP280;
 
 class SensorManager {
-public:
+ public:
   struct SensorData {
     int16_t temperature;
     int16_t humidity;
@@ -22,10 +25,11 @@ public:
 
   void begin();
   void update();
-  bool isReady() const;
-  SensorData getSensorData();
 
-private:
+  bool isReady() const;
+  SensorData getSensorData() const;
+
+ private:
   enum State { IDLE, READING };
 
   Adafruit_AHTX0& thermometer;

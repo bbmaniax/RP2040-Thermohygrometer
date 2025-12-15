@@ -10,9 +10,9 @@
 SensorManager::SensorManager(Adafruit_AHTX0& thermometer, Adafruit_BMP280& barometer, unsigned long intervalMs)
     : thermometer(thermometer), barometer(barometer), state(IDLE), lastReadTime(0), resultReady(false) {
   interval = intervalMs;
-  lastData.temperature = 0;
-  lastData.humidity = 0;
-  lastData.pressure = 0;
+  lastData.temperature = INVALID_SENSOR_VALUE;
+  lastData.humidity = INVALID_SENSOR_VALUE;
+  lastData.pressure = INVALID_SENSOR_VALUE;
 }
 
 void SensorManager::begin() {
@@ -21,6 +21,9 @@ void SensorManager::begin() {
   if (!barometer.begin()) { DEBUG_SERIAL_PRINTLN("Failed to initialize BMP280!"); }
   state = IDLE;
   lastReadTime = millis() - interval;
+  lastData.temperature = INVALID_SENSOR_VALUE;
+  lastData.humidity = INVALID_SENSOR_VALUE;
+  lastData.pressure = INVALID_SENSOR_VALUE;
   resultReady = false;
 }
 
@@ -55,10 +58,13 @@ void SensorManager::update() {
 }
 
 bool SensorManager::isReady() const {
-  return resultReady;
+  bool ready = resultReady;
+  if (ready) {
+    const_cast<SensorManager*>(this)->resultReady = false;
+  }
+  return ready;
 }
 
-SensorManager::SensorData SensorManager::getSensorData() {
-  resultReady = false;
+SensorManager::SensorData SensorManager::getSensorData() const {
   return lastData;
 }

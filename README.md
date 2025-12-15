@@ -7,6 +7,7 @@
 温湿度と気圧のグラフ表示と上下反転表示に対応しています。
 
 <div>
+<img src="./images/pattern1.jpg" alt="全グラフ" width="120" />
 <img src="./images/pattern2.jpg" alt="温度" width="120" />
 <img src="./images/pattern3.jpg" alt="湿度" width="120"  />
 <img src="./images/pattern4.jpg" alt="気圧" width="120"  />
@@ -60,6 +61,7 @@
 | Adafruit BMP280 Library | BMP280気圧センサー制御 |
 | Adafruit NeoPixel | NeoPixel LED制御 |
 | Adafruit SSD1306 | SSD1306 OLEDディスプレイ制御 |
+| DigitalButton | タクトスイッチ制御 |
 
 **インストール**: Arduino IDEのライブラリマネージャーで検索・インストール
 

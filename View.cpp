@@ -101,19 +101,23 @@ void View::renderAllText(Adafruit_SSD1306& display) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
 
-  int16_t temp = model.getLatestTemperature();
-  int16_t hum = model.getLatestHumidity();
-  int16_t pres = model.getLatestPressure();
+  int16_t temperature = model.getLatestTemperature();
+  int16_t humidity = model.getLatestHumidity();
+  int16_t pressure = model.getLatestPressure();
 
   char buf[16];
   int16_t x1, y1;
   uint16_t w, h;
   const int16_t dotX = width / 2;
 
-  if (IS_VALID_SENSOR_VALUE(temp)) {
-    int16_t intPart = temp / 10;
-    uint8_t fracPart = abs(temp % 10);
-    snprintf(buf, sizeof(buf), "%4d", intPart);
+  if (IS_VALID_SENSOR_VALUE(temperature)) {
+    int16_t intPart = temperature / 10;
+    uint8_t fracPart = abs(temperature % 10);
+    if (temperature < 0 && intPart == 0) {
+      snprintf(buf, sizeof(buf), "  -0");
+    } else {
+      snprintf(buf, sizeof(buf), "%4d", intPart);
+    }
     display.getTextBounds(buf, 0, 0, &x1, &y1, &w, &h);
     display.setCursor(dotX - w, 8);
     display.print(buf);
@@ -131,9 +135,9 @@ void View::renderAllText(Adafruit_SSD1306& display) {
   }
 
   display.setTextSize(2);
-  if (IS_VALID_SENSOR_VALUE(hum)) {
-    int16_t intPart = hum / 10;
-    uint8_t fracPart = abs(hum % 10);
+  if (IS_VALID_SENSOR_VALUE(humidity)) {
+    int16_t intPart = humidity / 10;
+    uint8_t fracPart = abs(humidity % 10);
     snprintf(buf, sizeof(buf), "%4d", intPart);
     display.getTextBounds(buf, 0, 0, &x1, &y1, &w, &h);
     display.setCursor(dotX - w, 24);
@@ -151,9 +155,9 @@ void View::renderAllText(Adafruit_SSD1306& display) {
   }
 
   display.setTextSize(2);
-  if (IS_VALID_SENSOR_VALUE(pres)) {
-    int16_t intPart = pres / 10;
-    uint8_t fracPart = abs(pres % 10);
+  if (IS_VALID_SENSOR_VALUE(pressure)) {
+    int16_t intPart = pressure / 10;
+    uint8_t fracPart = abs(pressure % 10);
     snprintf(buf, sizeof(buf), "%4d", intPart);
     display.getTextBounds(buf, 0, 0, &x1, &y1, &w, &h);
     display.setCursor(dotX - w, 40);
@@ -179,7 +183,11 @@ void View::drawSensorData(int16_t value, const char* unit, const Rect& rect, Tex
   if (IS_VALID_SENSOR_VALUE(value)) {
     int16_t intPart = value / 10;
     uint8_t fracPart = abs(value % 10);
-    valueText = String(intPart) + "." + String(fracPart);
+    if (value < 0 && intPart == 0) {
+      valueText = String("-0.") + String(fracPart);
+    } else {
+      valueText = String(intPart) + "." + String(fracPart);
+    }
   }
 
   TextSize valueSize = textSize;

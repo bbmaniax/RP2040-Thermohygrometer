@@ -11,21 +11,20 @@ class SensorDataHistory;
 class SensorManager;
 
 class Model {
-public:
+ public:
   Model(SensorDataHistory& temperatureHistory, SensorDataHistory& humidityHistory, SensorDataHistory& pressureHistory);
 
   void begin(int16_t temperature, int16_t humidity, int16_t pressure);
   void update(int16_t temperature, int16_t humidity, int16_t pressure);
 
-  SensorDataHistory& getTemperatureHistory();
-  SensorDataHistory& getHumidityHistory();
-  SensorDataHistory& getPressureHistory();
+  int16_t getLatestTemperature() const;
+  int16_t getLatestHumidity() const;
+  int16_t getLatestPressure() const;
+  SensorDataHistory& getTemperatureHistory() const;
+  SensorDataHistory& getHumidityHistory() const;
+  SensorDataHistory& getPressureHistory() const;
 
-  int16_t getLatestTemperature();
-  int16_t getLatestHumidity();
-  int16_t getLatestPressure();
-
-private:
+ private:
   SensorDataHistory& temperatureHistory;
   SensorDataHistory& humidityHistory;
   SensorDataHistory& pressureHistory;
