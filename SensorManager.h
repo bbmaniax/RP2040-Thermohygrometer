@@ -1,7 +1,9 @@
-// SensorManager
+// SensorManager.h - Temperature and pressure sensor manager
 
-#ifndef __SENSOR_MANAGER_H__
-#define __SENSOR_MANAGER_H__
+#pragma once
+
+#ifndef SENSOR_MANAGER_H
+#  define SENSOR_MANAGER_H
 
 #include <Arduino.h>
 
@@ -35,4 +37,4 @@ private:
   bool resultReady;
 };
 
-#endif  // __SENSOR_MANAGER_H__
+#endif  // SENSOR_MANAGER_H

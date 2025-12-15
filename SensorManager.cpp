@@ -1,4 +1,4 @@
-// SensorManager
+// SensorManager.cpp - Temperature and pressure sensor manager
 
 #include <Adafruit_AHTX0.h>
 #include <Adafruit_BMP280.h>

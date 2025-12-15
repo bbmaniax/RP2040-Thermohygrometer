@@ -1,4 +1,4 @@
-// Model
+// Model.cpp - Model for Thermohygrometer
 
 #include <Arduino.h>
 
@@ -10,9 +10,9 @@ Model::Model(SensorDataHistory& temperatureHistory, SensorDataHistory& humidityH
 
 void Model::begin(int16_t temperature, int16_t humidity, int16_t pressure) {
   // DEBUG_SERIAL_PRINTLN("Initializing Model");
-  temperatureHistory.fill(temperature);
-  humidityHistory.fill(humidity);
-  pressureHistory.fill(pressure);
+  temperatureHistory.begin();
+  humidityHistory.begin();
+  pressureHistory.begin();
 }
 
 void Model::update(int16_t temperature, int16_t humidity, int16_t pressure) {

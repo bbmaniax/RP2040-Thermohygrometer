@@ -1,7 +1,9 @@
-// Model
+// Model.h - Model for Thermohygrometer
 
-#ifndef __MODEL_H__
-#define __MODEL_H__
+#pragma once
+
+#ifndef MODEL_H
+#  define MODEL_H
 
 #include <Arduino.h>
 
@@ -29,4 +31,4 @@ private:
   SensorDataHistory& pressureHistory;
 };
 
-#endif // __MODEL_H__
+#endif  // MODEL_H

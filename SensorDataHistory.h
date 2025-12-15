@@ -1,27 +1,30 @@
-// SensorDataHistory
+// SensorDataHistory.h - Sensor data history buffer
 
-#ifndef __SENSOR_DATA_HISTORY_H__
-#define __SENSOR_DATA_HISTORY_H__
+#pragma once
+
+#ifndef SENSOR_DATA_HISTORY_H
+#  define SENSOR_DATA_HISTORY_H
 
 #include <Arduino.h>
+
+#define INVALID_SENSOR_VALUE INT16_MIN
+#define IS_VALID_SENSOR_VALUE(value) ((value) != INVALID_SENSOR_VALUE)
 
 class SensorDataHistory {
 public:
   SensorDataHistory(int16_t* buffer, size_t size);
 
-  void fill(int16_t value);
-  void prepend(int16_t value);
+  size_t getCount() const;
 
+  void begin();
+  void prepend(int16_t value);
   int16_t getValue(size_t index) const;
-  int16_t getMaxValue() const;
-  int16_t getMinValue() const;
+  void getMinMaxValue(size_t count, int16_t& minValue, int16_t& maxValue) const;
 
 private:
   int16_t* buffer;
   size_t size;
-
-  int16_t minValue;
-  int16_t maxValue;
+  size_t count;
 };
 
-#endif  // __SENSOR_DATA_HISTORY_H__
+#endif  // SENSOR_DATA_HISTORY_H

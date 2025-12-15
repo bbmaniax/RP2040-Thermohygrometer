@@ -1,7 +1,9 @@
-// View
+// View.h - View for Thermohygrometer
 
-#ifndef __APP_VIEW_H__
-#define __APP_VIEW_H__
+#pragma once
+
+#ifndef VIEW_H
+#  define VIEW_H
 
 #include <Arduino.h>
 
@@ -46,4 +48,4 @@ private:
   bool initialFlipped;
 };
 
-#endif  // __APP_VIEW_H__
+#endif  // VIEW_H

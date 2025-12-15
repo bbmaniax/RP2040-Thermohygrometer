@@ -1,4 +1,4 @@
-// View
+// View.cpp - View for Thermohygrometer
 
 #include <Adafruit_SSD1306.h>
 #include <Arduino.h>
@@ -105,16 +105,27 @@ void View::renderPressureChart(Adafruit_SSD1306& display) {
 
 void View::drawChart(Adafruit_SSD1306& display, int16_t x, int16_t y, int16_t w, int16_t h, SensorDataHistory& history){
   // DEBUG_SERIAL_PRINTLN("Drawing chart");
-  int16_t minValue = history.getMinValue();
-  int16_t maxValue = history.getMaxValue();
+  size_t drawCount = w / plotHorizontalStep;
+
+  int16_t minValue, maxValue;
+  history.getMinMaxValue(drawCount, minValue, maxValue);
+
+  if (!IS_VALID_SENSOR_VALUE(minValue) || !IS_VALID_SENSOR_VALUE(maxValue)) {
+    return;
+  }
 
   int16_t range = maxValue - minValue;
   if (range < 1) { range = 1; }
 
   uint8_t step = plotHorizontalStep;
-  for (uint8_t i = 0; i < w - 1; i++) {
+  for (uint8_t i = 0; i < drawCount - 1 && i < history.getCount() - 1; i++) {
     int16_t currentValue = history.getValue(i);
     int16_t nextValue = history.getValue(i + 1);
+
+    if (!IS_VALID_SENSOR_VALUE(currentValue) || !IS_VALID_SENSOR_VALUE(nextValue)) {
+      continue;
+    }
+
     int16_t currentY = y + (int16_t)((maxValue - currentValue) * (h - 1) / range);
     int16_t nextY = y + (int16_t)((maxValue - nextValue) * (h - 1) / range);
     display.drawLine(w - (i * step) - 1, currentY, w - ((i + 1) * step) - 1, nextY, SSD1306_WHITE);

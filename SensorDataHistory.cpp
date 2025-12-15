@@ -1,45 +1,51 @@
-// SensorDataHistory
+// SensorDataHistory.cpp - Sensor data history buffer
 
 #include <Arduino.h>
 
 #include "SensorDataHistory.h"
 
-SensorDataHistory::SensorDataHistory(int16_t* buffer, size_t size) : size(size), buffer(buffer), minValue(0), maxValue(0) {}
+SensorDataHistory::SensorDataHistory(int16_t* buffer, size_t size) : buffer(buffer), size(size), count(0) {}
 
-void SensorDataHistory::fill(int16_t value) {
-  for (size_t i = 0; i < size; i++) { buffer[i] = value; }
-  minValue = value;
-  maxValue = value;
+size_t SensorDataHistory::getCount() const {
+  return count;
+}
+
+void SensorDataHistory::begin() {
+  count = 0;
 }
 
 void SensorDataHistory::prepend(int16_t value) {
-  int16_t removedValue = buffer[size - 1];
-
-  memmove(&buffer[1], &buffer[0], (size - 1) * sizeof(int16_t));
-  buffer[0] = value;
-
-  if (value > maxValue) { maxValue = value; }
-  if (value < minValue) { minValue = value; }
-
-  if (removedValue == minValue || removedValue == maxValue) {
-    minValue = buffer[0];
-    maxValue = buffer[0];
-    for (size_t i = 1; i < size; i++) {
-      if (buffer[i] < minValue) minValue = buffer[i];
-      if (buffer[i] > maxValue) maxValue = buffer[i];
-    }
+  for (size_t i = (count == size ? size - 1 : count); i > 0; i--) {
+    buffer[i] = buffer[i - 1];
   }
+  buffer[0] = value;
+  if (count < size) count++;
 }
 
 int16_t SensorDataHistory::getValue(size_t index) const {
-  if (index < size) { return buffer[index]; }
-  return 0;
+  if (index < count) {
+    return buffer[index];
+  }
+  return INVALID_SENSOR_VALUE;
 }
 
-int16_t SensorDataHistory::getMaxValue() const {
-  return maxValue;
-}
+void SensorDataHistory::getMinMaxValue(size_t count, int16_t& minValue, int16_t& maxValue) const {
+  minValue = INVALID_SENSOR_VALUE;
+  maxValue = INVALID_SENSOR_VALUE;
+  bool foundValid = false;
 
-int16_t SensorDataHistory::getMinValue() const {
-  return minValue;
+  size_t checkCount = (this->count < count) ? this->count : count;
+
+  for (size_t i = 0; i < checkCount; i++) {
+    if (IS_VALID_SENSOR_VALUE(buffer[i])) {
+      if (!foundValid) {
+        minValue = buffer[i];
+        maxValue = buffer[i];
+        foundValid = true;
+      } else {
+        if (buffer[i] < minValue) minValue = buffer[i];
+        if (buffer[i] > maxValue) maxValue = buffer[i];
+      }
+    }
+  }
 }
