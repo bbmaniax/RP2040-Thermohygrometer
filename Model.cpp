@@ -2,10 +2,10 @@
 
 #include <Arduino.h>
 
-#include "History.h"
+#include "SensorDataHistory.h"
 #include "Model.h"
 
-Model::Model(History& temperatureHistory, History& humidityHistory, History& pressureHistory)
+Model::Model(SensorDataHistory& temperatureHistory, SensorDataHistory& humidityHistory, SensorDataHistory& pressureHistory)
     : temperatureHistory(temperatureHistory), humidityHistory(humidityHistory), pressureHistory(pressureHistory) {}
 
 void Model::begin(int16_t temperature, int16_t humidity, int16_t pressure) {
@@ -22,15 +22,15 @@ void Model::update(int16_t temperature, int16_t humidity, int16_t pressure) {
   pressureHistory.prepend(pressure);
 }
 
-History& Model::getTemperatureHistory() {
+SensorDataHistory& Model::getTemperatureHistory() {
   return temperatureHistory;
 }
 
-History& Model::getHumidityHistory() {
+SensorDataHistory& Model::getHumidityHistory() {
   return humidityHistory;
 }
 
-History& Model::getPressureHistory() {
+SensorDataHistory& Model::getPressureHistory() {
   return pressureHistory;
 }
 

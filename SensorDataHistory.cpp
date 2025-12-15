@@ -1,18 +1,18 @@
-// History
+// SensorDataHistory
 
 #include <Arduino.h>
 
-#include "History.h"
+#include "SensorDataHistory.h"
 
-History::History(int16_t* buffer, size_t size) : size(size), buffer(buffer), minValue(0), maxValue(0) {}
+SensorDataHistory::SensorDataHistory(int16_t* buffer, size_t size) : size(size), buffer(buffer), minValue(0), maxValue(0) {}
 
-void History::fill(int16_t value) {
+void SensorDataHistory::fill(int16_t value) {
   for (size_t i = 0; i < size; i++) { buffer[i] = value; }
   minValue = value;
   maxValue = value;
 }
 
-void History::prepend(int16_t value) {
+void SensorDataHistory::prepend(int16_t value) {
   int16_t removedValue = buffer[size - 1];
 
   memmove(&buffer[1], &buffer[0], (size - 1) * sizeof(int16_t));
@@ -31,15 +31,15 @@ void History::prepend(int16_t value) {
   }
 }
 
-int16_t History::getValue(size_t index) const {
+int16_t SensorDataHistory::getValue(size_t index) const {
   if (index < size) { return buffer[index]; }
   return 0;
 }
 
-int16_t History::getMaxValue() const {
+int16_t SensorDataHistory::getMaxValue() const {
   return maxValue;
 }
 
-int16_t History::getMinValue() const {
+int16_t SensorDataHistory::getMinValue() const {
   return minValue;
 }

@@ -1,13 +1,13 @@
-// History
+// SensorDataHistory
 
-#ifndef __HISTORY_H__
-#define __HISTORY_H__
+#ifndef __SENSOR_DATA_HISTORY_H__
+#define __SENSOR_DATA_HISTORY_H__
 
 #include <Arduino.h>
 
-class History {
+class SensorDataHistory {
 public:
-  History(int16_t* buffer, size_t size);
+  SensorDataHistory(int16_t* buffer, size_t size);
 
   void fill(int16_t value);
   void prepend(int16_t value);
@@ -24,4 +24,4 @@ private:
   int16_t maxValue;
 };
 
-#endif  // __HISTORY_H__
+#endif  // __SENSOR_DATA_HISTORY_H__

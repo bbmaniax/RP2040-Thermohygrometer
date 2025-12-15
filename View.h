@@ -6,7 +6,7 @@
 #include <Arduino.h>
 
 class Adafruit_SSD1306;
-class History;
+class SensorDataHistory;
 class Model;
 
 class View {
@@ -34,7 +34,7 @@ private:
   void renderPressureChart(Adafruit_SSD1306& display);
   void renderAllText(Adafruit_SSD1306& display);
 
-  void drawChart(Adafruit_SSD1306& display, int16_t x, int16_t y, int16_t w, int16_t h, History& history);
+  void drawChart(Adafruit_SSD1306& display, int16_t x, int16_t y, int16_t w, int16_t h, SensorDataHistory& history);
 
   Model& model;
   ViewMode viewMode;

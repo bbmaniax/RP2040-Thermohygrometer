@@ -8,7 +8,7 @@
 
 #include "DebugSerial.h"
 #include "DigitalButton.h"
-#include "History.h"
+#include "SensorDataHistory.h"
 #include "Model.h"
 #include "SensorManager.h"
 #include "View.h"
@@ -35,9 +35,9 @@ Adafruit_SSD1306 display(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 Adafruit_AHTX0 thermometer;
 Adafruit_BMP280 barometer;
 
-History temperatureHistory(temperatureHistoryBuffer, HISTORY_BUFFER_SIZE);
-History humidityHistory(humidityHistoryBuffer, HISTORY_BUFFER_SIZE);
-History pressureHistory(pressureHistoryBuffer, HISTORY_BUFFER_SIZE);
+SensorDataHistory temperatureHistory(temperatureHistoryBuffer, HISTORY_BUFFER_SIZE);
+SensorDataHistory humidityHistory(humidityHistoryBuffer, HISTORY_BUFFER_SIZE);
+SensorDataHistory pressureHistory(pressureHistoryBuffer, HISTORY_BUFFER_SIZE);
 Model model(temperatureHistory, humidityHistory, pressureHistory);
 View view(model, display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 SensorManager sensorManager(thermometer, barometer, SENSOR_READ_INTERVAL_MS);
