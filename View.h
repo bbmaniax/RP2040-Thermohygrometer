@@ -5,22 +5,47 @@
 #ifndef VIEW_H
 #  define VIEW_H
 
-#include <Arduino.h>
+#  include <Arduino.h>
 
 class Adafruit_SSD1306;
 class SensorDataHistory;
 class Model;
 
 class View {
-public:
-  View(Model& model, Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horizontalSpacing = 1, bool flipped = false);
+ public:
+  struct Rect {
+    int16_t x;
+    int16_t y;
+    int16_t w;
+    int16_t h;
+  };
+
+  enum HorizontalAlign {
+    HALIGN_LEFT,
+    HALIGN_CENTER,
+    HALIGN_RIGHT,
+  };
+
+  enum VerticalAlign {
+    VALIGN_TOP,
+    VALIGN_CENTER,
+    VALIGN_BOTTOM,
+  };
+
+  enum TextSize {
+    TEXT_SIZE_SMALL = 1,
+    TEXT_SIZE_MEDIUM = 2,
+    TEXT_SIZE_LARGE = 3,
+  };
+
+  View(Model& model, Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horizontalSpacing = 1);
 
   void begin(uint8_t i2cAddress, bool displayOn = true);
   void switchToNextViewMode();
   void flip();
   void render();
 
-private:
+ private:
   typedef enum {
     VIEW_MODE_ALL_CHARTS = 0,
     VIEW_MODE_TEMPERATURE_CHART,
@@ -36,7 +61,8 @@ private:
   void renderPressureChart(Adafruit_SSD1306& display);
   void renderAllText(Adafruit_SSD1306& display);
 
-  void drawChart(Adafruit_SSD1306& display, int16_t x, int16_t y, int16_t w, int16_t h, SensorDataHistory& history);
+  void drawSensorData(int16_t value, const char* unit, const Rect& rect, TextSize textSize, HorizontalAlign hAlign, VerticalAlign vAlign, bool withBackground);
+  void drawSensorDataHistory(SensorDataHistory& history, const Rect& rect);
 
   Model& model;
   ViewMode viewMode;
@@ -45,7 +71,6 @@ private:
   size_t height;
   uint8_t plotHorizontalStep;
   bool flipped;
-  bool initialFlipped;
 };
 
 #endif  // VIEW_H
