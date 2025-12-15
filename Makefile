@@ -6,7 +6,7 @@ TESTS ?=
 TEST_SOURCES ?=
 
 BOARDS ?= \
-	rpipico
+ 	rp2040-zero
 # 	uno
 # 	nano
 # 	nano-old
@@ -20,7 +20,6 @@ BOARDS ?= \
 # 	unor4-minima
 # 	unor4-wifi
 # 	rpipico
-# 	rp2040-zero
 # 	rp2040-promicro
 # 	esp32c3-supermini
 # 	xiao-esp32c3
@@ -92,7 +91,7 @@ endef
 
 define deploy-uf2
 	$(DEPLOY_UF2_CMD) \
-		"$(subst /,\,$(BUILD_DIR)/$(subst :,.,$(word 1,$(subst :, ,$(1))).$(word 2,$(subst :, ,$(1))).$(word 3,$(subst :, ,$(1))))))"
+		"$(subst /,\,$(BUILD_DIR)/$(subst :,.,$(word 1,$(subst :, ,$(1))).$(word 2,$(subst :, ,$(1))).$(word 3,$(subst :, ,$(1)))))" \
 		"$(DEPLOY_UF2_PORT)" $(2).ino.uf2
 endef
 
