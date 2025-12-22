@@ -37,7 +37,7 @@ void SensorDataHistory::getMinMaxValue(size_t count, int16_t& minValue, int16_t&
   size_t checkCount = (this->count < count) ? this->count : count;
 
   for (size_t i = 0; i < checkCount; i++) {
-    if (IS_VALID_SENSOR_VALUE(buffer[i])) {
+    if (buffer[i] != INVALID_SENSOR_VALUE) {
       if (!foundValid) {
         minValue = buffer[i];
         maxValue = buffer[i];

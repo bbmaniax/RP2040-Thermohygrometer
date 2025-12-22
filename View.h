@@ -8,8 +8,8 @@
 #  include <Arduino.h>
 
 class Adafruit_SSD1306;
-class SensorDataHistory;
 class Model;
+class SensorDataHistory;
 
 class View {
  public:
