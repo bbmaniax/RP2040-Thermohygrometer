@@ -49,7 +49,7 @@ class View {
 
   View(Model& model, Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horizontalSpacing = 1);
 
-  void begin(uint8_t i2cAddress, bool displayOn = true);
+  void begin(uint8_t displayI2CAddress, bool displayOn = true);
   void switchToNextViewMode();
   void flip();
   void render();

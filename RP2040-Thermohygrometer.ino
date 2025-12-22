@@ -8,21 +8,21 @@
 
 #include "DebugSerial.h"
 #include "DigitalButton.h"
-#include "SensorDataHistory.h"
 #include "Model.h"
+#include "SensorDataHistory.h"
 #include "SensorManager.h"
 #include "View.h"
 
+#define SERIAL_SPEED 115200
 #define RGBLED_PIN 16
 #define RGBLED_BRIGHTNESS 127
-#define SERIAL_SPEED 115200
 #define BUTTON_PIN 29
 #define DISPLAY_I2C_ADDRESS 0x3C
 #define DISPLAY_WIDTH 128
 #define DISPLAY_HEIGHT 64
 
 #define PLOT_HORIZONTAL_SPACING 1
-#define HISTORY_BUFFER_SIZE (DISPLAY_WIDTH / (PLOT_HORIZONTAL_SPACING + 1) + PLOT_HORIZONTAL_SPACING)
+#define HISTORY_BUFFER_SIZE ((DISPLAY_WIDTH / PLOT_HORIZONTAL_SPACING) + 1)
 #define SENSOR_READ_INTERVAL_MS 3000
 
 int16_t temperatureHistoryBuffer[HISTORY_BUFFER_SIZE];
@@ -50,7 +50,7 @@ void setup() {
   blink(160, 160, 160, 200);
 
   Serial.begin(SERIAL_SPEED);
-  while (!Serial && millis() < 1000) {}
+  while (!Serial && millis() < 1000);
   Serial.println();
   Serial.println("--");
   Serial.println("Thermohygrometer (build " + timestamp() + ")");
@@ -59,12 +59,12 @@ void setup() {
   sensorManager.begin();
   delay(100);
 
-  model.begin(0, 0, 0);
+  model.begin();
   view.begin(DISPLAY_I2C_ADDRESS);
 
   if (digitalRead(BUTTON_PIN) == LOW) {
     scan(Wire, display);
-    while (digitalRead(BUTTON_PIN) == LOW) {}
+    while (digitalRead(BUTTON_PIN) == LOW);
   }
 }
 
@@ -94,10 +94,11 @@ void loop() {
   }
 
   if (needRender) {
-    String line = "TS:" + String(millis())  //
-      + " T:" + String(model.getLatestTemperature() / 10.0f, 1)  //
-      + " H:" + String(model.getLatestHumidity() / 10.0f, 1)  //
-      + " P:" + String(model.getLatestPressure() / 10.0f, 1);  //
+    String line =                                         //
+      "TS:" + String(millis())                            //
+      + " T:" + String(model.getTemperature() / 10.0f, 1)  //
+      + " H:" + String(model.getHumidity() / 10.0f, 1)     //
+      + " P:" + String(model.getPressure() / 10.0f, 1);    //
     Serial.println(line);
     view.render();
     needRender = false;

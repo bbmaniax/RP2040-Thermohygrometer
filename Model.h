@@ -14,12 +14,12 @@ class Model {
  public:
   Model(SensorDataHistory& temperatureHistory, SensorDataHistory& humidityHistory, SensorDataHistory& pressureHistory);
 
-  void begin(int16_t temperature, int16_t humidity, int16_t pressure);
+  void begin();
   void update(int16_t temperature, int16_t humidity, int16_t pressure);
 
-  int16_t getLatestTemperature() const;
-  int16_t getLatestHumidity() const;
-  int16_t getLatestPressure() const;
+  int16_t getTemperature() const;
+  int16_t getHumidity() const;
+  int16_t getPressure() const;
   SensorDataHistory& getTemperatureHistory() const;
   SensorDataHistory& getHumidityHistory() const;
   SensorDataHistory& getPressureHistory() const;

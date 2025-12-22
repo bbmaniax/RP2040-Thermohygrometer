@@ -13,9 +13,9 @@ View::View(Model& model, Adafruit_SSD1306& display, size_t width, size_t height,
     : model(model), viewMode(VIEW_MODE_ALL_TEXT), display(display), width(width), height(height), plotHorizontalStep(horizontalSpacing + 1), flipped(false) {
 }
 
-void View::begin(uint8_t i2cAddress, bool displayOn) {
+void View::begin(uint8_t displayI2CAddress, bool displayOn) {
   viewMode = VIEW_MODE_ALL_CHARTS;
-  if (!display.begin(SSD1306_SWITCHCAPVCC, i2cAddress)) {
+  if (!display.begin(SSD1306_SWITCHCAPVCC, displayI2CAddress)) {
     DEBUG_SERIAL_PRINTLN("Failed to initialize display");
   }
   if (displayOn) {
@@ -61,9 +61,9 @@ void View::renderAllCharts(Adafruit_SSD1306& display) {
   drawSensorDataHistory(model.getTemperatureHistory(), {0, 0, (int16_t)width, chartHeight});
   drawSensorDataHistory(model.getHumidityHistory(), {0, 21, (int16_t)width, chartHeight});
   drawSensorDataHistory(model.getPressureHistory(), {0, 42, (int16_t)width, chartHeight});
-  drawSensorData(model.getLatestTemperature(), "C", {0, 0, (int16_t)width, chartHeight}, TEXT_SIZE_SMALL, HALIGN_LEFT, VALIGN_TOP, true);
-  drawSensorData(model.getLatestHumidity(), "%", {0, 21, (int16_t)width, chartHeight}, TEXT_SIZE_SMALL, HALIGN_LEFT, VALIGN_TOP, true);
-  drawSensorData(model.getLatestPressure(), "hPa", {0, 42, (int16_t)width, chartHeight}, TEXT_SIZE_SMALL, HALIGN_LEFT, VALIGN_TOP, true);
+  drawSensorData(model.getTemperature(), "C", {0, 0, (int16_t)width, chartHeight}, TEXT_SIZE_SMALL, HALIGN_LEFT, VALIGN_TOP, true);
+  drawSensorData(model.getHumidity(), "%", {0, 21, (int16_t)width, chartHeight}, TEXT_SIZE_SMALL, HALIGN_LEFT, VALIGN_TOP, true);
+  drawSensorData(model.getPressure(), "hPa", {0, 42, (int16_t)width, chartHeight}, TEXT_SIZE_SMALL, HALIGN_LEFT, VALIGN_TOP, true);
   display.display();
 }
 
@@ -72,7 +72,7 @@ void View::renderTemperatureChart(Adafruit_SSD1306& display) {
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
   drawSensorDataHistory(model.getTemperatureHistory(), {0, (int16_t)textHeight, (int16_t)width, (int16_t)(height - textHeight)});
-  drawSensorData(model.getLatestTemperature(), "C", {0, 0, (int16_t)width, (int16_t)textHeight}, TEXT_SIZE_MEDIUM, HALIGN_LEFT, VALIGN_TOP, true);
+  drawSensorData(model.getTemperature(), "C", {0, 0, (int16_t)width, (int16_t)textHeight}, TEXT_SIZE_MEDIUM, HALIGN_LEFT, VALIGN_TOP, true);
   display.display();
 }
 
@@ -81,7 +81,7 @@ void View::renderHumidityChart(Adafruit_SSD1306& display) {
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
   drawSensorDataHistory(model.getHumidityHistory(), {0, (int16_t)textHeight, (int16_t)width, (int16_t)(height - textHeight)});
-  drawSensorData(model.getLatestHumidity(), "%", {0, 0, (int16_t)width, (int16_t)textHeight}, TEXT_SIZE_MEDIUM, HALIGN_LEFT, VALIGN_TOP, true);
+  drawSensorData(model.getHumidity(), "%", {0, 0, (int16_t)width, (int16_t)textHeight}, TEXT_SIZE_MEDIUM, HALIGN_LEFT, VALIGN_TOP, true);
   display.display();
 }
 
@@ -90,7 +90,7 @@ void View::renderPressureChart(Adafruit_SSD1306& display) {
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
   drawSensorDataHistory(model.getPressureHistory(), {0, (int16_t)textHeight, (int16_t)width, (int16_t)(height - textHeight)});
-  drawSensorData(model.getLatestPressure(), "hPa", {0, 0, (int16_t)width, (int16_t)textHeight}, TEXT_SIZE_MEDIUM, HALIGN_LEFT, VALIGN_TOP, true);
+  drawSensorData(model.getPressure(), "hPa", {0, 0, (int16_t)width, (int16_t)textHeight}, TEXT_SIZE_MEDIUM, HALIGN_LEFT, VALIGN_TOP, true);
   display.display();
 }
 
@@ -101,9 +101,9 @@ void View::renderAllText(Adafruit_SSD1306& display) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
 
-  int16_t temperature = model.getLatestTemperature();
-  int16_t humidity = model.getLatestHumidity();
-  int16_t pressure = model.getLatestPressure();
+  int16_t temperature = model.getTemperature();
+  int16_t humidity = model.getHumidity();
+  int16_t pressure = model.getPressure();
 
   char buf[16];
   int16_t x1, y1;
@@ -263,7 +263,7 @@ void View::drawSensorDataHistory(SensorDataHistory& history, const Rect& rect) {
   size_t count = history.getCount();
 
   if (count >= 2) {
-    size_t maxDataPoints = chartW / plotHorizontalStep;
+    size_t maxDataPoints = (chartW + plotHorizontalStep - 1) / plotHorizontalStep + 1;
     size_t drawCount = count < maxDataPoints ? count : maxDataPoints;
 
     int16_t minValue, maxValue;
