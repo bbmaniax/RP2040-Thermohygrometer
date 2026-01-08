@@ -1,32 +1,33 @@
-// Model
+// Model.h - Model for Thermohygrometer
 
-#ifndef __MODEL_H__
-#define __MODEL_H__
+#pragma once
 
-#include <Arduino.h>
+#ifndef MODEL_H
+#  define MODEL_H
 
-class History;
+#  include <Arduino.h>
+
+class SensorDataHistory;
 class SensorManager;
 
 class Model {
-public:
-  Model(History& temperatureHistory, History& humidityHistory, History& pressureHistory);
+ public:
+  Model(SensorDataHistory& temperatureHistory, SensorDataHistory& humidityHistory, SensorDataHistory& pressureHistory);
 
-  void begin(int16_t temperature, int16_t humidity, int16_t pressure);
+  void begin();
   void update(int16_t temperature, int16_t humidity, int16_t pressure);
 
-  History& getTemperatureHistory();
-  History& getHumidityHistory();
-  History& getPressureHistory();
+  int16_t getTemperature() const;
+  int16_t getHumidity() const;
+  int16_t getPressure() const;
+  SensorDataHistory& getTemperatureHistory() const;
+  SensorDataHistory& getHumidityHistory() const;
+  SensorDataHistory& getPressureHistory() const;
 
-  int16_t getLatestTemperature();
-  int16_t getLatestHumidity();
-  int16_t getLatestPressure();
-
-private:
-  History& temperatureHistory;
-  History& humidityHistory;
-  History& pressureHistory;
+ private:
+  SensorDataHistory& temperatureHistory;
+  SensorDataHistory& humidityHistory;
+  SensorDataHistory& pressureHistory;
 };
 
-#endif // __MODEL_H__
+#endif  // MODEL_H

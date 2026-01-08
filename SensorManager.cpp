@@ -1,4 +1,4 @@
-// SensorManager
+// SensorManager.cpp - Temperature and pressure sensor manager
 
 #include <Adafruit_AHTX0.h>
 #include <Adafruit_BMP280.h>
@@ -7,31 +7,64 @@
 #include "DebugSerial.h"
 #include "SensorManager.h"
 
-SensorManager::SensorManager(Adafruit_AHTX0& thermometer, Adafruit_BMP280& barometer) : thermometer(thermometer), barometer(barometer) {}
+SensorManager::SensorManager(Adafruit_AHTX0& thermometer, Adafruit_BMP280& barometer, unsigned long intervalMs)
+    : thermometer(thermometer), barometer(barometer), state(IDLE), lastReadTime(0), resultReady(false) {
+  interval = intervalMs;
+  lastData.temperature = INVALID_SENSOR_VALUE;
+  lastData.humidity = INVALID_SENSOR_VALUE;
+  lastData.pressure = INVALID_SENSOR_VALUE;
+}
 
 void SensorManager::begin() {
   // DEBUG_SERIAL_PRINTLN("Initializing SensorManager");
   if (!thermometer.begin()) { DEBUG_SERIAL_PRINTLN("Failed to initialize AHTX0!"); }
   if (!barometer.begin()) { DEBUG_SERIAL_PRINTLN("Failed to initialize BMP280!"); }
+  state = IDLE;
+  lastReadTime = millis() - interval;
+  lastData.temperature = INVALID_SENSOR_VALUE;
+  lastData.humidity = INVALID_SENSOR_VALUE;
+  lastData.pressure = INVALID_SENSOR_VALUE;
+  resultReady = false;
 }
 
-void SensorManager::acquire() {
-  // DEBUG_SERIAL_PRINTLN("Reading sensor data");
-  sensors_event_t temperatureEvent, humidityEvent;
-  if (thermometer.getEvent(&humidityEvent, &temperatureEvent)) {
-    data.temperature = static_cast<int16_t>(temperatureEvent.temperature * 10.0f);
-    data.humidity = static_cast<int16_t>(humidityEvent.relative_humidity * 10.0f);
-  } else {
-    DEBUG_SERIAL_PRINTLN("Failed to read AHTX0!");
-  }
-  float pressure = barometer.readPressure();
-  if (!isnan(pressure)) {
-    data.pressure = static_cast<int16_t>(pressure / 10.0f);
-  } else {
-    DEBUG_SERIAL_PRINTLN("Failed to read BMP280!");
+void SensorManager::update() {
+  switch (state) {
+    case IDLE:
+      if (millis() - lastReadTime >= interval) {
+        state = READING;
+      }
+      break;
+
+    case READING: {
+      // DEBUG_SERIAL_PRINTLN("Reading sensor data");
+      sensors_event_t temperatureEvent, humidityEvent;
+      if (thermometer.getEvent(&humidityEvent, &temperatureEvent)) {
+        lastData.temperature = static_cast<int16_t>(temperatureEvent.temperature * 10.0f);
+        lastData.humidity = static_cast<int16_t>(humidityEvent.relative_humidity * 10.0f);
+      } else {
+        DEBUG_SERIAL_PRINTLN("Failed to read AHTX0!");
+      }
+      float pressure = barometer.readPressure();
+      if (!isnan(pressure)) {
+        lastData.pressure = static_cast<int16_t>(pressure / 10.0f);
+      } else {
+        DEBUG_SERIAL_PRINTLN("Failed to read BMP280!");
+      }
+      resultReady = true;
+      lastReadTime = millis();
+      state = IDLE;
+    } break;
   }
 }
 
-SensorManager::SensorData& SensorManager::getData() {
-  return data;
+bool SensorManager::isReady() const {
+  bool ready = resultReady;
+  if (ready) {
+    const_cast<SensorManager*>(this)->resultReady = false;
+  }
+  return ready;
+}
+
+SensorManager::SensorData SensorManager::getSensorData() const {
+  return lastData;
 }

@@ -1,18 +1,18 @@
-// Model
+// Model.cpp - Model for Thermohygrometer
 
 #include <Arduino.h>
 
-#include "History.h"
+#include "SensorDataHistory.h"
 #include "Model.h"
 
-Model::Model(History& temperatureHistory, History& humidityHistory, History& pressureHistory)
+Model::Model(SensorDataHistory& temperatureHistory, SensorDataHistory& humidityHistory, SensorDataHistory& pressureHistory)
     : temperatureHistory(temperatureHistory), humidityHistory(humidityHistory), pressureHistory(pressureHistory) {}
 
-void Model::begin(int16_t temperature, int16_t humidity, int16_t pressure) {
+void Model::begin() {
   // DEBUG_SERIAL_PRINTLN("Initializing Model");
-  temperatureHistory.fill(temperature);
-  humidityHistory.fill(humidity);
-  pressureHistory.fill(pressure);
+  temperatureHistory.begin();
+  humidityHistory.begin();
+  pressureHistory.begin();
 }
 
 void Model::update(int16_t temperature, int16_t humidity, int16_t pressure) {
@@ -22,26 +22,26 @@ void Model::update(int16_t temperature, int16_t humidity, int16_t pressure) {
   pressureHistory.prepend(pressure);
 }
 
-History& Model::getTemperatureHistory() {
-  return temperatureHistory;
-}
-
-History& Model::getHumidityHistory() {
-  return humidityHistory;
-}
-
-History& Model::getPressureHistory() {
-  return pressureHistory;
-}
-
-int16_t Model::getLatestTemperature() {
+int16_t Model::getTemperature() const {
   return temperatureHistory.getValue(0);
 }
 
-int16_t Model::getLatestHumidity() {
+int16_t Model::getHumidity() const {
   return humidityHistory.getValue(0);
 }
 
-int16_t Model::getLatestPressure() {
+int16_t Model::getPressure() const {
   return pressureHistory.getValue(0);
+}
+
+SensorDataHistory& Model::getTemperatureHistory() const {
+  return temperatureHistory;
+}
+
+SensorDataHistory& Model::getHumidityHistory() const {
+  return humidityHistory;
+}
+
+SensorDataHistory& Model::getPressureHistory() const {
+  return pressureHistory;
 }
