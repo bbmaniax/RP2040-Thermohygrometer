@@ -56,14 +56,15 @@ void View::render() {
 
 void View::renderAllCharts(Adafruit_SSD1306& display) {
   const uint8_t chartHeight = 20;
+  const uint8_t textHeight = 8;
   display.clearDisplay();
   display.setRotation(flipped ? 2 : 0);
-  drawSensorDataHistory(model.getTemperatureHistory(), {0, 0, (int16_t)width, chartHeight});
-  drawSensorDataHistory(model.getHumidityHistory(), {0, 21, (int16_t)width, chartHeight});
-  drawSensorDataHistory(model.getPressureHistory(), {0, 42, (int16_t)width, chartHeight});
   drawSensorData(model.getTemperature(), "C", {0, 0, (int16_t)width, chartHeight}, TEXT_SIZE_SMALL, HALIGN_LEFT, VALIGN_TOP, true);
   drawSensorData(model.getHumidity(), "%", {0, 21, (int16_t)width, chartHeight}, TEXT_SIZE_SMALL, HALIGN_LEFT, VALIGN_TOP, true);
   drawSensorData(model.getPressure(), "hPa", {0, 42, (int16_t)width, chartHeight}, TEXT_SIZE_SMALL, HALIGN_LEFT, VALIGN_TOP, true);
+  drawSensorDataHistory(model.getTemperatureHistory(), {0, (int16_t)textHeight, (int16_t)width, (int16_t)(chartHeight - textHeight)});
+  drawSensorDataHistory(model.getHumidityHistory(), {0, (int16_t)(21 + textHeight), (int16_t)width, (int16_t)(chartHeight - textHeight)});
+  drawSensorDataHistory(model.getPressureHistory(), {0, (int16_t)(42 + textHeight), (int16_t)width, (int16_t)(chartHeight - textHeight)});
   display.display();
 }
 
