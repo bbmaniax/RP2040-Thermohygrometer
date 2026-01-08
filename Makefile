@@ -5,41 +5,8 @@ LIBS ?= "Adafruit AHTX0" "Adafruit BMP280 Library" "Adafruit SSD1306" "Adafruit 
 TESTS ?=
 TEST_SOURCES ?=
 
-BOARDS ?= \
- 	rp2040-zero
-# 	uno
-# 	nano
-# 	nano-old
-# 	promini
-# 	leonardo
-# 	promicro
-# 	attiny85
-# 	attiny13
-# 	lgt8f328p-uno
-# 	lgt8f328p-nano
-# 	unor4-minima
-# 	unor4-wifi
-# 	rpipico
-# 	rp2040-promicro
-# 	esp32c3-supermini
-# 	xiao-esp32c3
-# 	xiao-esp32c6
-#	ch32v003
-# 	uaip-promicro
-CORES ?= \
-	rp2040:rp2040
-# 	arduino:avr
-# 	SparkFun:avr
-# 	arduino:renesas_uno
-# 	ATTinyCore:avr
-# 	MicroCore:avr
-# 	megaTinyCore:megaavr
-# 	lgt8fx:avr
-# 	rp2040:rp2040
-# 	esp32:esp32
-# 	m5stack:esp32
-# 	ch32-riscv-arduino:ch32riscv
-# 	UIAP:ch32v
+BOARDS ?= rp2040-zero
+CORES ?= rp2040:rp2040
 
 TMP_DIR ?= ./tmp
 BIN_DIR ?= ./bin
