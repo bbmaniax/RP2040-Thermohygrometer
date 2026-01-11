@@ -54,7 +54,7 @@ void setup() {
   while (!Serial && millis() < 1000);
   Serial.println();
   Serial.println("--");
-  Serial.println("Thermohygrometer (build " + timestamp() + ")");
+  Serial.println("Thermohygrometer (built at " + String(__DATE__) + " " + String(__TIME__) + ")");
 
   button.begin();
   sensorManager.begin();
@@ -115,19 +115,6 @@ void blink(uint8_t r, uint8_t g, uint8_t b, unsigned long durationMs) {
   rgbled.setPixelColor(0, 0, 0, 0);
   rgbled.show();
   delay(durationMs);
-}
-
-String timestamp() {
-  const char* m = "JanFebMarAprMayJunJulAugSepOctNovDec";
-  char mon[4];
-  int d, y, hh, mm, ss;
-  sscanf(__DATE__, "%3s %d %d", mon, &d, &y);
-  sscanf(__TIME__, "%d:%d:%d", &hh, &mm, &ss);
-  int mo = (strstr(m, mon) - m) / 3 + 1;
-
-  char buf[16];
-  sprintf(buf, "%04d%02d%02d.%02d%02d%02d", y, mo, d, hh, mm, ss);
-  return String(buf);
 }
 
 void scan(TwoWire& wire, Adafruit_SSD1306& display) {
