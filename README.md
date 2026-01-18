@@ -34,24 +34,17 @@
 
 ### 統合開発環境
 
-| 名前 | 説明 |
-|:-----------|:-----|
-| Arduino IDE | 統合開発環境 |
+**インストール**:
+1. 公式サイト [https://www.arduino.cc/en/software/#ide](https://www.arduino.cc/en/software/#ide) からダウンロード・インストール
 
-**インストール**: 公式サイト [https://www.arduino.cc/en/software/#ide](https://www.arduino.cc/en/software/#ide) からダウンロード・インストール
-
-### ボードサポートパッケージ
-
-| 名前 | 説明 |
-|:------|:-----|
-| Raspberry Pi Pico/RP2040/RP2350 | ボードサポートパッケージ |
+### ボードマネージャ
 
 **インストール**:
 1. Arduino IDE の「ファイル」→「環境設定」→「追加のボードマネージャのURL」に以下を追加:
    ```
    https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
    ```
-2. ボードマネージャーで「Pico」または「RP2040」を検索・インストール
+2. ボードマネージャーで「Raspberry Pi Pico/RP2040」を検索し、「インストール」ボタンをクリック
 
 ### 依存ライブラリ
 
@@ -65,9 +58,16 @@
 
 **インストール**: Arduino IDEのライブラリマネージャーで検索・インストール
 
-## 操作
+## ビルド・書き込み手順
 
-マイコンに電源を供給すると作動します。
+1. Arduino IDE で `RP2040-Thermohygrometer.ino` を開く
+2. 「ツール」→「ボード」→「Raspberry Pi Pico/RP2040」→「Waveshare RP2040-Zero」を選択
+3. RP2040-ZeroのBOOTSELボタンを押しながらUSBケーブルを接続（マスストレージデバイスとして認識）
+4. 画面上部の右向き矢印ボタン（アップロード）をクリック
+
+## スケッチの動作
+
+USB 端子からマイコンに電源を供給すると作動します。
 定期的に温湿度・気圧を測定して、OLED に表示します。
 
 ボタンを押すと、表示パターンが切り替わります。
