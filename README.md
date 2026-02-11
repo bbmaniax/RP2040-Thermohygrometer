@@ -37,10 +37,10 @@
 **インストール**:
 1. 公式サイト [https://www.arduino.cc/en/software/#ide](https://www.arduino.cc/en/software/#ide) からダウンロード・インストール
 
-### ボードマネージャ
+### ボードマネージャー
 
 **インストール**:
-1. Arduino IDE の「ファイル」→「環境設定」→「追加のボードマネージャのURL」に以下を追加:
+1. Arduino IDE の「ファイル」→「環境設定」→「追加のボードマネージャーのURL」に以下を追加:
    ```
    https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
    ```
