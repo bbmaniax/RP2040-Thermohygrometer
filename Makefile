@@ -21,7 +21,7 @@ DEPLOY_ARDUINO_PORT_TTYUSB ?= /dev/ttyUSB0
 DEPLOY_ARDUINO_PORT_TTYACM ?= /dev/ttyACM0
 
 DEPLOY_UF2_CMD ?= /mnt/c/Windows/System32/robocopy.exe
-DEPLOY_UF2_PORT ?= D:/
+DEPLOY_UF2_PORT ?= A:/
 
 # This section should be appended after project-specific variable definitions
 # Projects should define:
