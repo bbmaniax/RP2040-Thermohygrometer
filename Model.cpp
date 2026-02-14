@@ -9,14 +9,14 @@ Model::Model(SensorDataHistory& temperatureHistory, SensorDataHistory& humidityH
     : temperatureHistory(temperatureHistory), humidityHistory(humidityHistory), pressureHistory(pressureHistory) {}
 
 void Model::begin() {
-  // DEBUG_SERIAL_PRINTLN("Initializing Model");
+  // Serial.println("Initializing Model");
   temperatureHistory.begin();
   humidityHistory.begin();
   pressureHistory.begin();
 }
 
 void Model::update(int16_t temperature, int16_t humidity, int16_t pressure) {
-  // DEBUG_SERIAL_PRINTLN("Updating Model: T=" + String(temperature / 10.0f, 1) + "C, H=" + String(humidity / 10.0f, 1) + "%, P=" + String(pressure / 10.0f, 1) + "hPa");
+  // Serial.println("Updating Model: T=" + String(temperature / 10.0f, 1) + "C, H=" + String(humidity / 10.0f, 1) + "%, P=" + String(pressure / 10.0f, 1) + "hPa");
   temperatureHistory.prepend(temperature);
   humidityHistory.prepend(humidity);
   pressureHistory.prepend(pressure);

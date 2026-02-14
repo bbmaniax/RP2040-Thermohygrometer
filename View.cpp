@@ -5,7 +5,6 @@
 #include <Adafruit_SSD1306.h>
 #include <Arduino.h>
 
-#include "DebugSerial.h"
 #include "Model.h"
 #include "SensorDataHistory.h"
 
@@ -16,7 +15,7 @@ View::View(Model& model, Adafruit_SSD1306& display, size_t width, size_t height,
 void View::begin(uint8_t displayI2CAddress, bool displayOn) {
   viewMode = VIEW_MODE_ALL_CHARTS;
   if (!display.begin(SSD1306_SWITCHCAPVCC, displayI2CAddress)) {
-    DEBUG_SERIAL_PRINTLN("Failed to initialize display");
+    Serial.println("Failed to initialize display");
   }
   if (displayOn) {
     display.display();

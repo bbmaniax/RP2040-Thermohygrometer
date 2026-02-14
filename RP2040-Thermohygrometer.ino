@@ -6,7 +6,6 @@
 #include <Adafruit_SSD1306.h>
 #include <Arduino.h>
 
-#include "DebugSerial.h"
 #include "DigitalButton.h"
 #include "Model.h"
 #include "SensorDataHistory.h"
