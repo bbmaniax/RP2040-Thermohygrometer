@@ -20,8 +20,8 @@
 #define DISPLAY_WIDTH 128
 #define DISPLAY_HEIGHT 64
 
-#define PLOT_HORIZONTAL_SPACING 1
-#define HISTORY_BUFFER_SIZE ((DISPLAY_WIDTH / PLOT_HORIZONTAL_SPACING) + 1)
+#define HORIZONTAL_STEP 1
+#define HISTORY_BUFFER_SIZE ((DISPLAY_WIDTH + HORIZONTAL_STEP - 1) / HORIZONTAL_STEP + 1)
 #define SENSOR_READ_INTERVAL_MS 3000
 #define INVALID_SENSOR_VALUE INT16_MIN
 
@@ -39,7 +39,7 @@ SensorDataHistory temperatureHistory(temperatureHistoryBuffer, HISTORY_BUFFER_SI
 SensorDataHistory humidityHistory(humidityHistoryBuffer, HISTORY_BUFFER_SIZE);
 SensorDataHistory pressureHistory(pressureHistoryBuffer, HISTORY_BUFFER_SIZE);
 Model model(temperatureHistory, humidityHistory, pressureHistory);
-View view(model, display, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+View view(model, display, DISPLAY_WIDTH, DISPLAY_HEIGHT, HORIZONTAL_STEP);
 SensorManager sensorManager(thermometer, barometer, SENSOR_READ_INTERVAL_MS);
 
 void setup() {

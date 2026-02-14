@@ -47,7 +47,7 @@ class View {
     TEXT_SIZE_LARGE = 3,
   };
 
-  View(Model& model, Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horizontalSpacing = 1);
+  View(Model& model, Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horizontalStep = 1);
 
   void begin(uint8_t displayI2CAddress, bool displayOn = true);
   void switchToNextViewMode();
@@ -68,7 +68,7 @@ class View {
   Adafruit_SSD1306& display;
   size_t width;
   size_t height;
-  uint8_t plotHorizontalStep;
+  uint8_t horizontalStep;
   bool flipped;
 };
 

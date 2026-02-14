@@ -30,7 +30,7 @@ RP2040-Thermohygrometerは、RP2040マイコンを使用した温湿度・気圧
 - 表示I2Cアドレス: `0x3C`
 - 表示解像度: `128x64`
 - 測定間隔: `3000ms`
-- プロット横間隔: `PLOT_HORIZONTAL_SPACING=1`（内部ステップは `+1` される）
+- グラフ横ステップ: `HORIZONTAL_STEP=1`
 
 ### センサー値の扱い
 
@@ -106,7 +106,7 @@ RP2040-Thermohygrometerは、RP2040マイコンを使用した温湿度・気圧
 - 表示モード初期値は `VIEW_MODE_ALL_CHARTS`
 - 温度単位 `C` は小円 + `C` で描画
 - 履歴グラフは最小/最大値で正規化し、レンジが0近傍でも描画可能なよう `range >= 1` を保証
-- `plotHorizontalStep` は `horizontalSpacing + 1`
+- グラフ描画は `horizontalStep` を直接使用する
 
 ### センサードライバ
 

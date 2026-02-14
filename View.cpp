@@ -8,8 +8,8 @@
 #include "Model.h"
 #include "SensorDataHistory.h"
 
-View::View(Model& model, Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horizontalSpacing)
-    : model(model), viewMode(VIEW_MODE_ALL_TEXT), display(display), width(width), height(height), plotHorizontalStep(horizontalSpacing + 1), flipped(false) {
+View::View(Model& model, Adafruit_SSD1306& display, size_t width, size_t height, uint8_t horizontalStep)
+  : model(model), viewMode(VIEW_MODE_ALL_TEXT), display(display), width(width), height(height), horizontalStep(horizontalStep), flipped(false) {
 }
 
 void View::begin(uint8_t displayI2CAddress, bool displayOn) {
@@ -252,7 +252,7 @@ void View::drawSensorData(int16_t value, const char* unit, const Rect& rect, Tex
 }
 
 void View::drawSensorDataHistory(SensorDataHistory& history, const Rect& rect) {
-  if (rect.w <= 0 || rect.h <= 0 || plotHorizontalStep == 0) {
+  if (rect.w <= 0 || rect.h <= 0 || horizontalStep == 0) {
     return;
   }
 
@@ -264,7 +264,7 @@ void View::drawSensorDataHistory(SensorDataHistory& history, const Rect& rect) {
   size_t count = history.getCount();
 
   if (count >= 2) {
-    size_t maxDataPoints = (chartW + plotHorizontalStep - 1) / plotHorizontalStep + 1;
+    size_t maxDataPoints = (chartW + horizontalStep - 1) / horizontalStep + 1;
     size_t drawCount = count < maxDataPoints ? count : maxDataPoints;
 
     int16_t minValue, maxValue;
@@ -287,8 +287,8 @@ void View::drawSensorDataHistory(SensorDataHistory& history, const Rect& rect) {
         int16_t currentY = chartY + (int16_t)(((int32_t)(maxValue - currentValue) * (chartH - 1)) / range);
         int16_t nextY = chartY + (int16_t)(((int32_t)(maxValue - nextValue) * (chartH - 1)) / range);
 
-        int16_t currentX = chartX + chartW - 1 - (i * plotHorizontalStep);
-        int16_t nextX = chartX + chartW - 1 - ((i + 1) * plotHorizontalStep);
+        int16_t currentX = chartX + chartW - 1 - (i * horizontalStep);
+        int16_t nextX = chartX + chartW - 1 - ((i + 1) * horizontalStep);
         display.drawLine(currentX, currentY, nextX, nextY, SSD1306_WHITE);
       }
     }
