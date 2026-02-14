@@ -106,7 +106,7 @@ void View::renderAllText(Adafruit_SSD1306& display) {
   int16_t humidity = model.getHumidity();
   int16_t pressure = model.getPressure();
 
-  char buf[16];
+  static char textBuffer[16];
   int16_t x1, y1;
   uint16_t w, h;
   const int16_t dotX = width / 2;
@@ -115,16 +115,16 @@ void View::renderAllText(Adafruit_SSD1306& display) {
     int16_t intPart = temperature / 10;
     uint8_t fracPart = abs(temperature % 10);
     if (temperature < 0 && intPart == 0) {
-      snprintf(buf, sizeof(buf), "  -0");
+      snprintf(textBuffer, sizeof(textBuffer), "  -0");
     } else {
-      snprintf(buf, sizeof(buf), "%4d", intPart);
+      snprintf(textBuffer, sizeof(textBuffer), "%4d", intPart);
     }
-    display.getTextBounds(buf, 0, 0, &x1, &y1, &w, &h);
+    display.getTextBounds(textBuffer, 0, 0, &x1, &y1, &w, &h);
     display.setCursor(dotX - w, 8);
-    display.print(buf);
-    snprintf(buf, sizeof(buf), ".%d", fracPart);
-    display.print(buf);
-    display.getTextBounds(buf, 0, 0, &x1, &y1, &w, &h);
+    display.print(textBuffer);
+    snprintf(textBuffer, sizeof(textBuffer), ".%d", fracPart);
+    display.print(textBuffer);
+    display.getTextBounds(textBuffer, 0, 0, &x1, &y1, &w, &h);
     int16_t unitX = dotX + w;
     display.setTextSize(1);
     display.drawCircle(unitX + 2, 9, 1, SSD1306_WHITE);
@@ -139,13 +139,13 @@ void View::renderAllText(Adafruit_SSD1306& display) {
   if (IS_VALID_SENSOR_VALUE(humidity)) {
     int16_t intPart = humidity / 10;
     uint8_t fracPart = abs(humidity % 10);
-    snprintf(buf, sizeof(buf), "%4d", intPart);
-    display.getTextBounds(buf, 0, 0, &x1, &y1, &w, &h);
+    snprintf(textBuffer, sizeof(textBuffer), "%4d", intPart);
+    display.getTextBounds(textBuffer, 0, 0, &x1, &y1, &w, &h);
     display.setCursor(dotX - w, 24);
-    display.print(buf);
-    snprintf(buf, sizeof(buf), ".%d", fracPart);
-    display.print(buf);
-    display.getTextBounds(buf, 0, 0, &x1, &y1, &w, &h);
+    display.print(textBuffer);
+    snprintf(textBuffer, sizeof(textBuffer), ".%d", fracPart);
+    display.print(textBuffer);
+    display.getTextBounds(textBuffer, 0, 0, &x1, &y1, &w, &h);
     int16_t unitX = dotX + w;
     display.setTextSize(1);
     display.setCursor(unitX, 24);
@@ -159,13 +159,13 @@ void View::renderAllText(Adafruit_SSD1306& display) {
   if (IS_VALID_SENSOR_VALUE(pressure)) {
     int16_t intPart = pressure / 10;
     uint8_t fracPart = abs(pressure % 10);
-    snprintf(buf, sizeof(buf), "%4d", intPart);
-    display.getTextBounds(buf, 0, 0, &x1, &y1, &w, &h);
+    snprintf(textBuffer, sizeof(textBuffer), "%4d", intPart);
+    display.getTextBounds(textBuffer, 0, 0, &x1, &y1, &w, &h);
     display.setCursor(dotX - w, 40);
-    display.print(buf);
-    snprintf(buf, sizeof(buf), ".%d", fracPart);
-    display.print(buf);
-    display.getTextBounds(buf, 0, 0, &x1, &y1, &w, &h);
+    display.print(textBuffer);
+    snprintf(textBuffer, sizeof(textBuffer), ".%d", fracPart);
+    display.print(textBuffer);
+    display.getTextBounds(textBuffer, 0, 0, &x1, &y1, &w, &h);
     int16_t unitX = dotX + w;
     display.setTextSize(1);
     display.setCursor(unitX, 40);
@@ -179,15 +179,16 @@ void View::renderAllText(Adafruit_SSD1306& display) {
 }
 
 void View::drawSensorData(int16_t value, const char* unit, const Rect& rect, TextSize textSize, HorizontalAlign hAlign, VerticalAlign vAlign, bool withBackground) {
-  String valueText("--.-");
+  static char valueText[8];
+  strcpy(valueText, "--.-");
 
   if (IS_VALID_SENSOR_VALUE(value)) {
     int16_t intPart = value / 10;
     uint8_t fracPart = abs(value % 10);
     if (value < 0 && intPart == 0) {
-      valueText = String("-0.") + String(fracPart);
+      snprintf(valueText, sizeof(valueText), "-0.%u", fracPart);
     } else {
-      valueText = String(intPart) + "." + String(fracPart);
+      snprintf(valueText, sizeof(valueText), "%d.%u", intPart, fracPart);
     }
   }
 
@@ -198,7 +199,7 @@ void View::drawSensorData(int16_t value, const char* unit, const Rect& rect, Tex
   uint16_t valueW, valueH, unitW, unitH;
 
   display.setTextSize(valueSize);
-  display.getTextBounds(valueText.c_str(), 0, 0, &x1, &y1, &valueW, &valueH);
+  display.getTextBounds(valueText, 0, 0, &x1, &y1, &valueW, &valueH);
 
   display.setTextSize(unitSize);
   display.getTextBounds(unit, 0, 0, &x1, &y1, &unitW, &unitH);
@@ -239,7 +240,7 @@ void View::drawSensorData(int16_t value, const char* unit, const Rect& rect, Tex
 
   display.setTextSize(valueSize);
   display.setCursor(cursorX, cursorY);
-  display.print(valueText.c_str());
+  display.print(valueText);
 
   if (strcmp(unit, "C") == 0) {
     int16_t degreeY = cursorY + (valueSize == 1 ? 1 : (valueSize == 2 ? 2 : 3));
