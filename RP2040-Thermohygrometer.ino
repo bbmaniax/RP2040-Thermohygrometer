@@ -80,7 +80,7 @@ void loop() {
     needRender = true;
   }
 
-  if (sensorManager.isReady()) {
+  if (sensorManager.consumeReady()) {
     SensorManager::SensorData data = sensorManager.getSensorData();
     printSensorData(millis(), data);
     model.update(data.temperature, data.humidity, data.pressure);

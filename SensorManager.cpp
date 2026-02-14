@@ -58,9 +58,13 @@ void SensorManager::update() {
 }
 
 bool SensorManager::isReady() const {
+  return resultReady;
+}
+
+bool SensorManager::consumeReady() {
   bool ready = resultReady;
   if (ready) {
-    const_cast<SensorManager*>(this)->resultReady = false;
+    resultReady = false;
   }
   return ready;
 }

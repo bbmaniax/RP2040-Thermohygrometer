@@ -95,7 +95,8 @@ RP2040-Thermohygrometerは、RP2040マイコンを使用した温湿度・気圧
 
 - `begin()` で AHT20/BMP280 の `begin()` を実行
 - 読み取り失敗時はログ出力し、直前値または無効値を保持
-- `isReady()` は結果取得フラグを消費する実装（呼び出し時にfalseへ戻す）
+- `isReady()` は結果取得フラグを参照のみ（非破壊）
+- `consumeReady()` は結果取得フラグを消費する（1回だけ true）
 
 ### SensorDataHistory
 
