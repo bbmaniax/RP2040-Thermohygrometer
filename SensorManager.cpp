@@ -4,7 +4,6 @@
 #include <Adafruit_BMP280.h>
 #include <Arduino.h>
 
-#include "DebugSerial.h"
 #include "SensorManager.h"
 
 SensorManager::SensorManager(Adafruit_AHTX0& thermometer, Adafruit_BMP280& barometer, unsigned long intervalMs)
@@ -16,9 +15,9 @@ SensorManager::SensorManager(Adafruit_AHTX0& thermometer, Adafruit_BMP280& barom
 }
 
 void SensorManager::begin() {
-  // DEBUG_SERIAL_PRINTLN("Initializing SensorManager");
-  if (!thermometer.begin()) { DEBUG_SERIAL_PRINTLN("Failed to initialize AHTX0!"); }
-  if (!barometer.begin()) { DEBUG_SERIAL_PRINTLN("Failed to initialize BMP280!"); }
+  // Serial.println("Initializing SensorManager");
+  if (!thermometer.begin()) { Serial.println("Failed to initialize AHTX0!"); }
+  if (!barometer.begin()) { Serial.println("Failed to initialize BMP280!"); }
   state = IDLE;
   lastReadTime = millis() - interval;
   lastData.temperature = INVALID_SENSOR_VALUE;
@@ -36,19 +35,19 @@ void SensorManager::update() {
       break;
 
     case READING: {
-      // DEBUG_SERIAL_PRINTLN("Reading sensor data");
+      // Serial.println("Reading sensor data");
       sensors_event_t temperatureEvent, humidityEvent;
       if (thermometer.getEvent(&humidityEvent, &temperatureEvent)) {
         lastData.temperature = static_cast<int16_t>(temperatureEvent.temperature * 10.0f);
         lastData.humidity = static_cast<int16_t>(humidityEvent.relative_humidity * 10.0f);
       } else {
-        DEBUG_SERIAL_PRINTLN("Failed to read AHTX0!");
+        Serial.println("Failed to read AHTX0!");
       }
       float pressure = barometer.readPressure();
       if (!isnan(pressure)) {
         lastData.pressure = static_cast<int16_t>(pressure / 10.0f);
       } else {
-        DEBUG_SERIAL_PRINTLN("Failed to read BMP280!");
+        Serial.println("Failed to read BMP280!");
       }
       resultReady = true;
       lastReadTime = millis();
@@ -58,9 +57,13 @@ void SensorManager::update() {
 }
 
 bool SensorManager::isReady() const {
+  return resultReady;
+}
+
+bool SensorManager::consumeReady() {
   bool ready = resultReady;
   if (ready) {
-    const_cast<SensorManager*>(this)->resultReady = false;
+    resultReady = false;
   }
   return ready;
 }

@@ -27,6 +27,7 @@ class SensorManager {
   void update();
 
   bool isReady() const;
+  bool consumeReady();
   SensorData getSensorData() const;
 
  private:
