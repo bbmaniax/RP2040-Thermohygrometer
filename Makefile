@@ -16,7 +16,7 @@ build: build/rp2040-zero
 .PHONY: deploy
 deploy: deploy/rp2040-zero
 
-## Configrations
+## Configurations
 
 TMP_DIR ?= ./tmp
 BIN_DIR ?= ./bin
