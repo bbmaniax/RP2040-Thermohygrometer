@@ -15,5 +15,3 @@ build_cache:
 logging:
   level: info
   format: text
-
-default_fqbn: rp2040:rp2040:rpipico
