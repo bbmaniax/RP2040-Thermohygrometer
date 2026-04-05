@@ -33,7 +33,6 @@ DEPLOY_UF2_PORT ?= A:/
 
 define build-arduino
 	arduino-cli compile \
-		--library ./src \
 		--fqbn $(1) \
 		--export-binaries \
 		$(if $(filter-out undefined,$(origin DEBUG)),--build-property "build.extra_flags=-DDEBUG") \
