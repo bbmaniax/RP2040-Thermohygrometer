@@ -20,9 +20,9 @@
 | 種別 | 型番など | 数量 |
 |:-----|:---------|:-----|
 | ブレッドボード | 170H | 1個 |
-| マイコン | RP2040-Zero | 1個 |
 | ジャンパーワイヤ | - | 12本 |
 | タクトスイッチ | 2P 6x6mm | 1個 |
+| マイコン | RP2040-Zero | 1個 |
 | OLED モジュール | 0.96" 128x64 SSD1306 | 1個 |
 | 温湿度・気圧センサーモジュール | AHT20+BMP280 | 1個 |
 
@@ -35,15 +35,19 @@
 ### 統合開発環境
 
 **インストール**:
+
 1. 公式サイト [https://www.arduino.cc/en/software/#ide](https://www.arduino.cc/en/software/#ide) からダウンロード・インストール
 
 ### ボードマネージャー
 
 **インストール**:
+
 1. Arduino IDE の「ファイル」→「環境設定」→「追加のボードマネージャーのURL」に以下を追加:
+
    ```
    https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
    ```
+
 2. ボードマネージャーで「Raspberry Pi Pico/RP2040」を検索し、「インストール」ボタンをクリック
 
 ### 依存ライブラリ
