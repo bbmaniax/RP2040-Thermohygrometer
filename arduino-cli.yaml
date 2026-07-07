@@ -12,6 +12,9 @@ build_cache:
   compilations_before_purge: 10
   ttl: 30m
 
+network:
+  connection_timeout: 60m
+
 logging:
   level: info
   format: text
